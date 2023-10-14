@@ -59,6 +59,14 @@ shell:
 logs:
 	@docker compose logs -f $(filter-out $@,$(MAKECMDGOALS))
 
+## symfony	:	Run Symfony command.
+##		You have to pass an argument with the command to run
+##		symfony make:migration	: Make a new Doctrine migration.
+##		symfony doctrine:migrations:migrate	: Run Doctrine migrations.
+##		symfony d:m:m	: Run Doctrine migrations.
+symfony:
+	docker compose exec php sh -c "set -e && php bin/console $(filter-out $@,$(MAKECMDGOALS))"
+
 # https://stackoverflow.com/a/6273809/1826109
 # Allows to pass arguments to targets
 %:
