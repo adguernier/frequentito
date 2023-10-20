@@ -1,6 +1,6 @@
 # Frequentito
 
-An application to inform your teammates or friends at the last moment of your presence at work or at an event.
+An application to inform your teammates at the last moment of your presence at work.
 
 ## Contribute
 
@@ -9,6 +9,8 @@ You need docker and docker compose. Then run:
 ```sh
 make start
 ```
+
+Then, you can go to https://localhost
 
 ### Authentication
 This application uses [JWT authentication](https://api-platform.com/docs/core/jwt/) provide by [LexikJWTAuthenticationBundle](https://symfony.com/bundles/LexikJWTAuthenticationBundle/current/index.html).
