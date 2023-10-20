@@ -1,25 +1,9 @@
-import Head from "next/head";
-import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 
-const Admin = () => {
-  // Load the admin client-side
-  const [DynamicAdmin, setDynamicAdmin] = useState(<p>Loading...</p>);
-  useEffect(() => {
-    (async () => {
-      const HydraAdmin = (await import("@api-platform/admin")).HydraAdmin;
+const AdminApp = dynamic(() =>
+  import("@/components/admin/AdminApp").then((mod) => mod.AdminApp)
+);
 
-      setDynamicAdmin(<HydraAdmin entrypoint={window.origin}></HydraAdmin>);
-    })();
-  }, []);
+const Index = () => <AdminApp />;
 
-  return (
-    <>
-      <Head>
-        <title>API Platform Admin</title>
-      </Head>
-
-      {DynamicAdmin}
-    </>
-  );
-};
-export default Admin;
+export default Index;
