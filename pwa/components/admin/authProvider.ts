@@ -1,8 +1,10 @@
 "use client";
 
+import { AuthProvider } from "react-admin";
 import { getAccessToken } from "./getAccessToken";
+import { jwtDecode } from "jwt-decode";
 
-export const authProvider = {
+export const authProvider: AuthProvider = {
   login: ({ username, password }: { username: string; password: string }) => {
     const request = new Request(
       `${process.env.NEXT_PUBLIC_API_ENTRYPOINT ?? window.origin}/auth`,
@@ -43,12 +45,25 @@ export const authProvider = {
     return Promise.resolve();
   },
   getIdentity: () => {
+    const token = getAccessToken();
+
+    if (!token) return Promise.reject();
+
+    const decoded = jwtDecode<JwtPayload>(token);
+
     return Promise.resolve({
-      id: "1",
-      fullName: "Admin",
+      id: "",
+      fullName: decoded.username,
       avatar: "",
     });
   },
   getPermissions: () => Promise.resolve(""),
   handleCallback: () => Promise.resolve(/* ... */), // for third-party authentication only
 };
+
+interface JwtPayload {
+  exp?: number;
+  iat?: number;
+  roles: string[];
+  username: string;
+}
