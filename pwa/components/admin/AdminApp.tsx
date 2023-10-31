@@ -3,6 +3,7 @@
 import { HydraAdmin, ResourceGuesser } from "@api-platform/admin";
 import { dataProvider } from "./dataProvider";
 import { authProvider } from "./authProvider";
+import { UserList } from "./users/UserList";
 
 export function AdminApp() {
   return (
@@ -14,7 +15,7 @@ export function AdminApp() {
       dataProvider={dataProvider}
       authProvider={authProvider}
     >
-      <ResourceGuesser name="users" />
+      <ResourceGuesser name="users" list={UserList} />
       <ResourceGuesser name="greetings" />
     </HydraAdmin>
   );
