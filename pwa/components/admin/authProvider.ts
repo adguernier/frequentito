@@ -1,5 +1,7 @@
 "use client";
 
+import { getAccessToken } from "./getAccessToken";
+
 export const authProvider = {
   login: ({ username, password }: { username: string; password: string }) => {
     const request = new Request(
@@ -12,29 +14,26 @@ export const authProvider = {
     );
     return fetch(request)
       .then((response) => {
-        console.debug("response", response);
         if (response.status < 200 || response.status >= 300) {
           throw new Error(response.statusText);
         }
         return response.json();
       })
       .then((auth) => {
-        localStorage.setItem("token", JSON.stringify(auth));
+        localStorage.setItem("token", auth.token);
       })
       .catch(() => {
         throw new Error("Network error");
       });
   },
   logout: () => {
-    console.log("logout");
-    localStorage.removeItem("username");
+    localStorage.removeItem("token");
     return Promise.resolve();
   },
   checkAuth: () => {
-    return localStorage.getItem("token") ? Promise.resolve() : Promise.reject();
+    return getAccessToken() ? Promise.resolve() : Promise.reject();
   },
   checkError: (error) => {
-    console.log("checkError");
     const status = error.status;
     if (status === 401 || status === 403) {
       localStorage.removeItem("token");
@@ -44,10 +43,10 @@ export const authProvider = {
     return Promise.resolve();
   },
   getIdentity: () => {
-    console.log("getIdentity");
     return Promise.resolve({
-      id: "user",
-      fullName: "John Doe",
+      id: "1",
+      fullName: "Admin",
+      avatar: "",
     });
   },
   getPermissions: () => Promise.resolve(""),

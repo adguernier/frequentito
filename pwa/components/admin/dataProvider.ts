@@ -22,7 +22,6 @@ const apiDocumentationParser = (accessToken: string | null) => async () => {
     if (status !== 401 || !response) {
       throw result;
     }
-    console.log(api);
     return {
       api,
       response,
