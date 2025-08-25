@@ -13,6 +13,7 @@
     "@heroui/checkbox": "^2.3.23",
     "@heroui/chip": "^2.2.19",
     "@heroui/code": "2.2.17",
+    "@heroui/form": "^2.1.23",
     "@heroui/input": "2.4.24",
     "@heroui/kbd": "2.2.18",
     "@heroui/link": "2.2.20",
@@ -25,13 +26,17 @@
     "@heroui/user": "^2.2.19",
     "@react-aria/ssr": "3.9.9",
     "@react-aria/visually-hidden": "3.8.25",
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.54.0",
     "clsx": "2.1.1",
+    "dotenv": "^17.2.1",
     "framer-motion": "11.18.2",
     "intl-messageformat": "10.7.16",
     "next": "15.3.1",
     "next-themes": "0.4.6",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "zod": "^4.0.15"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "15.3.4",
@@ -55,6 +60,7 @@
     "globals": "16.0.0",
     "postcss": "8.5.6",
     "prettier": "3.5.3",
+    "supabase": "^2.33.9",
     "tailwind-variants": "1.0.0",
     "tailwindcss": "4.1.11",
     "typescript": "5.6.3"
