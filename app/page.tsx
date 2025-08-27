@@ -34,7 +34,7 @@ export default function Home() {
     });
   };
 
-  console.log("HOME");
+  console.error("HOME", { state, am, pm, none });
 
   return (
     <section className="min-h-[70vh] flex items-center justify-center px-4">
