@@ -53,6 +53,11 @@ After modifying the `.npmrc` file, you need to run `pnpm install` again to ensur
 supabase start --ignore-health-check
 ```
 
+### Seeding database
+```shell
+npx tsx seed.ts
+```
+
 ## License
 
 Licensed under the [MIT license](https://github.com/heroui-inc/next-app-template/blob/main/LICENSE).
