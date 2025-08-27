@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
+import webpush from "web-push";
+import { createAdminClient } from "@/utils/supabase/admin";
 import z from "zod";
 
 const PresenceSchema = z.object({
@@ -54,6 +56,53 @@ export async function upsertPresence(
   });
 
   if (error) return { error: error.message };
+
+  // Send push notifications to teammates (use admin client to bypass RLS)
+  try {
+    const meta = user.user_metadata as {
+      first_name?: string;
+      last_name?: string;
+    } | null;
+    const actor = meta?.first_name
+      ? `${meta.first_name}${meta?.last_name ? " " + meta.last_name : ""}`
+      : "A teammate";
+
+    const admin = createAdminClient();
+    const { data: subs } = await admin
+      .from("push_subscriptions")
+      .select("endpoint, p256dh, auth, user_id");
+
+    const title = "Presence updated";
+    const body = `${actor} is ${am || pm ? `${am ? "here in the morning" : ""}${am && pm ? " and " : ""}${pm ? "here in the afternoon" : ""}` : "not coming today"}.`;
+
+    const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!;
+    const privateKey = process.env.VAPID_PRIVATE_KEY!;
+    const subject = process.env.VAPID_SUBJECT || "mailto:admin@example.com";
+    if (publicKey && privateKey) {
+      webpush.setVapidDetails(subject, publicKey, privateKey);
+      await Promise.all(
+        (subs || [])
+          .filter((s) => s.user_id !== user.id) // don't notify self
+          .map(async (s) => {
+            try {
+              await webpush.sendNotification(
+                {
+                  endpoint: s.endpoint,
+                  keys: { p256dh: s.p256dh, auth: s.auth },
+                } as any,
+                JSON.stringify({
+                  title,
+                  body,
+                  data: { url: "/" },
+                })
+              );
+            } catch (e) {
+              // ignore subscription errors
+            }
+          })
+      );
+    }
+  } catch {}
 
   revalidatePath("/", "page");
   return { ok: true };

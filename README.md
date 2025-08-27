@@ -13,16 +13,9 @@ This is a template for creating applications using Next.js 14 (app directory) an
 - [TypeScript](https://www.typescriptlang.org/)
 - [Framer Motion](https://www.framer.com/motion/)
 - [next-themes](https://github.com/pacocoursey/next-themes)
+- [Supabase](https://supabase.com/)
 
 ## How to Use
-
-### Use the template with create-next-app
-
-To create a new project based on this template using `create-next-app`, run the following command:
-
-```bash
-npx create-next-app -e https://github.com/heroui-inc/next-app-template
-```
 
 ### Install dependencies
 
@@ -38,24 +31,39 @@ npm install
 npm run dev
 ```
 
-### Setup pnpm (optional)
-
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
-
-```bash
-public-hoist-pattern[]=*@heroui/*
-```
-
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
-
 ### Start Supabase
 ```shell
 supabase start --ignore-health-check
 ```
 
+Add the output to your environment variables:
+```bash
+NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
+DATABASE_URL=<your-database-url>
+JWT_SECRET=<your-jwt-secret>
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
+NEXT_PUBLIC_SUPABASE_ROLE_KEY=<your-role-key>
+```
+
 ### Seeding database
 ```shell
 npx tsx seed.ts
+```
+
+### Generate VAPID keys
+
+You can generate VAPID keys using the following command:
+
+```bash
+npm install -g web-push
+web-push generate-vapid-keys
+```
+Add them to your environment variables:
+
+```bash
+NEXT_PUBLIC_VAPID_PUBLIC_KEY=<your-public-key>
+VAPID_PRIVATE_KEY=<your-private-key>
+VAPID_SUBJECT=<your-subject>
 ```
 
 ## License

@@ -4,6 +4,11 @@ import { Button } from "@heroui/button";
 import { useActionState, useState } from "react";
 import { upsertPresence } from "./actions";
 
+import dynamic from "next/dynamic";
+const PushManager = dynamic(() => import("@/components/PushManager"), {
+  ssr: false,
+});
+
 export default function Home() {
   const [state, action, pending] = useActionState(upsertPresence, undefined);
   const [am, setAm] = useState(false);
@@ -31,6 +36,7 @@ export default function Home() {
 
   return (
     <section className="min-h-[70vh] flex items-center justify-center px-4">
+      <PushManager />
       <form
         action={action}
         className="w-full max-w-md flex flex-col gap-6 items-center"
