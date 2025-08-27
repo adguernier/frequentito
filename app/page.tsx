@@ -34,6 +34,8 @@ export default function Home() {
     });
   };
 
+  console.log("HOME");
+
   return (
     <section className="min-h-[70vh] flex items-center justify-center px-4">
       <PushManager />

@@ -55,7 +55,7 @@ export async function upsertPresence(
     p_note: note ?? null,
   });
 
-  console.log("upsert_my_presence", { error, data });
+  console.error("upsert_my_presence", { error, data });
 
   if (error) return { error: error.message };
 
