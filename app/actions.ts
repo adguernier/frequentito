@@ -22,7 +22,10 @@ const PresenceSchema = z.object({
     .transform((v) => (v && v.length > 0 ? v : null)),
 });
 
-export type PresenceActionState = { ok: true } | { error: string } | undefined;
+export type PresenceActionState =
+  | { ok: true; debug?: unknown }
+  | { error: string; debug?: unknown }
+  | undefined;
 
 export async function upsertPresence(
   _state: PresenceActionState,
@@ -57,7 +60,15 @@ export async function upsertPresence(
 
   console.error("upsert_my_presence", { error, data });
 
-  if (error) return { error: error.message };
+  if (error)
+    return {
+      error: error.message,
+      debug: {
+        code: (error as any).code,
+        details: (error as any).details,
+        hint: (error as any).hint,
+      },
+    };
 
   // Send push notifications to teammates (use admin client to bypass RLS)
   try {
@@ -107,5 +118,5 @@ export async function upsertPresence(
   } catch {}
 
   revalidatePath("/", "page");
-  return { ok: true };
+  return { ok: true, debug: data };
 }

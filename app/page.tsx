@@ -34,8 +34,6 @@ export default function Home() {
     });
   };
 
-  console.error("HOME", { state, am, pm, none });
-
   return (
     <section className="min-h-[70vh] flex items-center justify-center px-4">
       <PushManager />
@@ -106,6 +104,14 @@ export default function Home() {
         {state && "ok" in state && state.ok && (
           <p className="text-sm text-success-500">Updated!</p>
         )}
+        {process.env.NEXT_PUBLIC_DEBUG === "true" &&
+          state &&
+          "debug" in state &&
+          (state as any).debug && (
+            <pre className="w-full text-xs whitespace-pre-wrap bg-content1 text-foreground-500 p-3 rounded-lg overflow-auto">
+              {JSON.stringify((state as any).debug, null, 2)}
+            </pre>
+          )}
       </form>
     </section>
   );
