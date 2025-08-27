@@ -48,12 +48,14 @@ export async function upsertPresence(
 
   const { am, pm, day, note } = parsed.data;
 
-  const { error } = await supabase.rpc("upsert_my_presence", {
+  const { error, data } = await supabase.rpc("upsert_my_presence", {
     p_day: day ?? null,
     p_am: am ?? false,
     p_pm: pm ?? false,
     p_note: note ?? null,
   });
+
+  console.log("upsert_my_presence", { error, data });
 
   if (error) return { error: error.message };
 
