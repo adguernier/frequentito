@@ -108,9 +108,12 @@ export default function Home() {
           state &&
           "debug" in state &&
           (state as any).debug && (
-            <pre className="w-full text-xs whitespace-pre-wrap bg-content1 text-foreground-500 p-3 rounded-lg overflow-auto">
-              {JSON.stringify((state as any).debug, null, 2)}
-            </pre>
+            <>
+              <h2 className="text-sm font-semibold">Debug Information</h2>
+              <pre className="w-full text-xs whitespace-pre-wrap bg-content1 text-foreground-500 p-3 rounded-lg overflow-auto">
+                {JSON.stringify((state as any).debug, null, 2)}
+              </pre>
+            </>
           )}
       </form>
     </section>
