@@ -9,7 +9,7 @@ import "../../envConfig";
 import { createSeedClient } from "@snaplet/seed";
 
 const main = async () => {
-  const seed = await createSeedClient({ dryRun: true });
+  const seed = await createSeedClient();
   await seed.$resetDatabase();
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
