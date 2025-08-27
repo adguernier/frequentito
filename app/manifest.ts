@@ -4,7 +4,8 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Frequentito",
     short_name: "Frequentito",
-    description: "Frequentito app",
+    description:
+      "An application to inform teammates our presence in the office",
     start_url: "/",
     display: "standalone",
     background_color: "#fff",
