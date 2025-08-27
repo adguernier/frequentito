@@ -104,12 +104,12 @@ export default function Home() {
         {state && "ok" in state && state.ok && (
           <p className="text-sm text-success-500">Updated!</p>
         )}
+        <h2 className="text-sm font-semibold">Debug Information</h2>
         {process.env.NEXT_PUBLIC_DEBUG === "true" &&
           state &&
           "debug" in state &&
           (state as any).debug && (
             <>
-              <h2 className="text-sm font-semibold">Debug Information</h2>
               <pre className="w-full text-xs whitespace-pre-wrap bg-content1 text-foreground-500 p-3 rounded-lg overflow-auto">
                 {JSON.stringify((state as any).debug, null, 2)}
               </pre>
