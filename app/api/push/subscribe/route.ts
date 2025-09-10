@@ -8,7 +8,7 @@ export async function POST(req: Request) {
   } = await supabase.auth.getUser();
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
+  console.log("We gonna push subscription", user.id);
   const body = await req.json();
   const { endpoint, keys } = body || {};
   if (!endpoint || !keys?.p256dh || !keys?.auth)

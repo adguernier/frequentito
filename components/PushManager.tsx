@@ -19,7 +19,7 @@ export default function PushManager() {
     (async () => {
       if (typeof window === "undefined") return;
       if (!("serviceWorker" in navigator) || !("PushManager" in window)) return;
-
+      console.log("PushManager: registering service worker");
       try {
         const reg = await navigator.serviceWorker.register("/sw.js");
         await navigator.serviceWorker.ready;
@@ -40,7 +40,7 @@ export default function PushManager() {
             userVisibleOnly: true,
             applicationServerKey: urlBase64ToUint8Array(publicKey),
           }));
-
+        console.log("Push subscription", sub);
         // Send to server
         await fetch("/api/push/subscribe", {
           method: "POST",
