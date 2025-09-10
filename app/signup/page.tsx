@@ -9,6 +9,8 @@ import { signup } from "./actions";
 type Errors = {
   errors: string[];
   properties?: {
+    first_name?: { errors: string[] };
+    last_name?: { errors: string[] };
     email?: { errors: string[] };
     password?: { errors: string[] };
     confirmPassword?: { errors: string[] };
@@ -31,6 +33,8 @@ export default function SignupPage() {
   const emailErrors = errors?.properties?.email?.errors ?? [];
   const passwordErrors = errors?.properties?.password?.errors ?? [];
   const confirmErrors = errors?.properties?.confirmPassword?.errors ?? [];
+  const firstNameErrors = errors?.properties?.first_name?.errors ?? [];
+  const lastNameErrors = errors?.properties?.last_name?.errors ?? [];
   const formErrors = errors?.errors ?? [];
   const authError =
     state && typeof (state as any).errors === "string"
@@ -48,6 +52,34 @@ export default function SignupPage() {
       >
         <h1 className="text-2xl font-semibold text-center">Create account</h1>
 
+        <Input
+          isRequired
+          size="lg"
+          className="w-full"
+          label="First name"
+          labelPlacement="outside"
+          name="first_name"
+          onChange={handleChange}
+          isInvalid={!pending && !dirty && firstNameErrors.length > 0}
+          errorMessage={
+            !pending && !dirty ? firstNameErrors.join("\n") : undefined
+          }
+          placeholder="Enter your first name"
+        />
+        <Input
+          isRequired
+          size="lg"
+          className="w-full"
+          label="Last name"
+          labelPlacement="outside"
+          name="last_name"
+          onChange={handleChange}
+          isInvalid={!pending && !dirty && lastNameErrors.length > 0}
+          errorMessage={
+            !pending && !dirty ? lastNameErrors.join("\n") : undefined
+          }
+          placeholder="Enter your last name"
+        />
         <Input
           isRequired
           size="lg"
@@ -95,7 +127,7 @@ export default function SignupPage() {
         </Button>
 
         <p className="text-center text-sm">
-          Already have an account? {" "}
+          Already have an account?{" "}
           <Link href="/login" className="underline">
             Log in
           </Link>
