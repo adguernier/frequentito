@@ -127,3 +127,39 @@ export async function logout() {
   revalidatePath("/", "layout");
   redirect("/login");
 }
+
+const PasswordSchema = z
+  .object({
+    password: z.string().min(8, "Password must be at least 8 characters."),
+    confirm: z.string(),
+    next: z.string().optional(),
+  })
+  .refine((d) => d.password === d.confirm, {
+    message: "Passwords do not match.",
+    path: ["confirm"],
+  });
+
+export type SetPasswordState = { error: string } | { ok: true } | undefined;
+
+export async function setPassword(
+  _state: SetPasswordState,
+  formData: FormData
+): Promise<SetPasswordState> {
+  const supabase = await createClient();
+
+  const parsed = PasswordSchema.safeParse({
+    password: formData.get("password")?.toString() ?? "",
+    confirm: formData.get("confirm")?.toString() ?? "",
+    next: formData.get("next")?.toString(),
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message || "Invalid input." };
+  }
+
+  const { password, next } = parsed.data;
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) return { error: error.message };
+
+  revalidatePath("/", "layout");
+  redirect(next || "/");
+}

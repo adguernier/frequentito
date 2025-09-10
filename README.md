@@ -1,3 +1,17 @@
+## Invite users and let them set a password
+
+Supabase invite emails send a magic link including `token_hash` and `type`.
+
+1. Ensure the confirm route is configured in Supabase Auth → URL Configuration:
+	- Site URL: `https://<your-domain>`
+	- Redirect URLs: include `/auth/confirm`
+2. In the email template (Invite user), set the action URL to point to `/auth/confirm` with `next` to a local set-password page, e.g.:
+
+	`${SITE_URL}/auth/confirm?token_hash={{ .TokenHash }}&type={{ .Type }}&next=/auth/set-password`
+
+3. Our `/auth/confirm` handler verifies the token and redirects to `next` if valid.
+4. The `/auth/set-password` page lets the user set their password via a server action calling `supabase.auth.updateUser({ password })`.
+
 # Next.js & HeroUI Template
 
 This is a template for creating applications using Next.js 14 (app directory) and HeroUI (v2).
