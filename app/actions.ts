@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import webpush from "web-push";
 import { createAdminClient } from "@/utils/supabase/admin";
@@ -117,4 +118,12 @@ export async function upsertPresence(
 
   revalidatePath("/", "page");
   return { ok: true, debug: data };
+}
+
+export async function logout() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  // Ensure UI updates and cookies are flushed, then go to login
+  revalidatePath("/", "layout");
+  redirect("/login");
 }
