@@ -41,6 +41,7 @@ export default async function PresenceList() {
   return (
     <ul className="divide-y divide-default-200 w-full bg-content1 rounded-lg overflow-hidden">
       {presences.map((presence) => {
+        console.log(presence.profiles);
         const fullName =
           presence.profiles?.first_name || presence.profiles?.last_name
             ? `${presence.profiles?.first_name ?? ""}${
@@ -50,11 +51,7 @@ export default async function PresenceList() {
               }${presence.profiles?.last_name ?? ""}`
             : "Unnamed teammate";
         const avatarUrl = presence.profiles?.avatar_url || null;
-        const initials = (
-          presence.profiles?.first_name?.[0] ||
-          presence.profiles?.last_name?.[0] ||
-          "?"
-        ).toUpperCase();
+
         return (
           <li
             key={presence.user_id}
