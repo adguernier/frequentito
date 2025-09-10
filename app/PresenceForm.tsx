@@ -2,7 +2,7 @@
 
 import { Button } from "@heroui/button";
 import { useActionState, useState } from "react";
-import { upsertPresence } from "../app/actions";
+import { upsertPresence } from "./actions";
 
 export const PresenceForm = () => {
   const [state, action, pending] = useActionState(upsertPresence, undefined);

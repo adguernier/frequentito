@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import { PresenceForm } from "@/components/PresenceForm";
-import PresenceList from "@/components/PresenceList";
-import PushManager from "@/components/PushManager";
+import { PresenceForm } from "@/app/PresenceForm";
+import PresenceList from "@/app/PresenceList";
+import PushManager from "@/app/PushManager";
 
 export default async function Home() {
   return (
