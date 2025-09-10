@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@heroui/button";
 import { useActionState, useState } from "react";
 import { upsertPresence } from "../app/actions";

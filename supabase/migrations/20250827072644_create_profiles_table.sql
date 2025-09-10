@@ -6,6 +6,14 @@ create table public.profiles (
 );
 alter table public.profiles enable row level security;
 
+create policy "Enable read access for all users"
+  on "public"."profiles"
+  as permissive
+  for select
+  to authenticated
+  using (true);
+
+
 -- inserts a row into public.profiles
 create function public.handle_new_user()
 returns trigger
