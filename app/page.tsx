@@ -5,10 +5,10 @@ import PushManager from "@/components/PushManager";
 
 export default async function Home() {
   return (
-    <section className="min-h-[70vh] w-full max-w-xl mx-auto flex flex-col gap-6 px-4 py-8">
+    <section className="min-h-[80vh] w-full flex flex-col items-center justify-center gap-8 px-4 py-8">
       <PushManager />
       <PresenceForm />
-      <div>
+      <div className="w-full max-w-md mx-auto">
         <h2 className="text-sm font-medium mb-2 text-foreground-500">
           Today’s teammates
         </h2>
