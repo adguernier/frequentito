@@ -163,3 +163,42 @@ export async function setPassword(
   revalidatePath("/", "layout");
   redirect(next || "/");
 }
+
+// Update current user's profile (first_name, last_name)
+const ProfileSchema = z.object({
+  first_name: z.string().trim().max(100).optional(),
+  last_name: z.string().trim().max(100).optional(),
+});
+
+export type ProfileActionState =
+  | { ok: true }
+  | { error: string }
+  | undefined;
+
+export async function updateProfile(
+  _state: ProfileActionState,
+  formData: FormData
+): Promise<ProfileActionState> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated." };
+
+  const parsed = ProfileSchema.safeParse({
+    first_name: formData.get("first_name")?.toString(),
+    last_name: formData.get("last_name")?.toString(),
+  });
+  if (!parsed.success) return { error: "Invalid input." };
+
+  const { first_name, last_name } = parsed.data;
+  const { error } = await supabase
+    .from("profiles")
+    .update({ first_name, last_name })
+    .eq("id", user.id);
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/profile");
+  return { ok: true };
+}

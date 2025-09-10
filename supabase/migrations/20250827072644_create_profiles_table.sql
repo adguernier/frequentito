@@ -13,6 +13,13 @@ create policy "Enable read access for all users"
   to authenticated
   using (true);
 
+create policy "Enable users to update their own profile"
+  on public.profiles
+  for update
+  to authenticated
+  using (auth.uid() = id)
+  with check (auth.uid() = id);
+
 
 -- inserts a row into public.profiles
 create function public.handle_new_user()
