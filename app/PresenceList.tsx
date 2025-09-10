@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { Avatar } from "@heroui/avatar";
 import { Chip } from "@heroui/chip";
 
 type Row = {
@@ -6,7 +7,11 @@ type Row = {
   am: boolean;
   pm: boolean;
   // Supabase will return an array for embedded tables when no direct FK is defined
-  profiles?: { first_name: string | null; last_name: string | null } | null;
+  profiles?: {
+    first_name: string | null;
+    last_name: string | null;
+    avatar_url: string | null;
+  } | null;
 };
 
 export default async function PresenceList() {
@@ -15,7 +20,7 @@ export default async function PresenceList() {
 
   const { data, error } = await supabase
     .from("presences")
-    .select("user_id, am, pm, profiles(first_name,last_name)")
+    .select("user_id, am, pm, profiles(first_name,last_name,avatar_url)")
     .eq("day", today)
     .or("am.is.true,pm.is.true");
 
@@ -44,12 +49,29 @@ export default async function PresenceList() {
                   : ""
               }${presence.profiles?.last_name ?? ""}`
             : "Unnamed teammate";
+        const avatarUrl = presence.profiles?.avatar_url || null;
+        const initials = (
+          presence.profiles?.first_name?.[0] ||
+          presence.profiles?.last_name?.[0] ||
+          "?"
+        ).toUpperCase();
         return (
           <li
             key={presence.user_id}
             className="flex items-center justify-between p-3"
           >
-            <span>{fullName}</span>
+            <span className="flex items-center gap-3">
+              {avatarUrl ? (
+                <Avatar
+                  src={avatarUrl}
+                  alt={fullName}
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+              ) : (
+                <Avatar name={fullName} />
+              )}
+              <span>{fullName}</span>
+            </span>
             <span className="flex gap-2">
               {presence.am && (
                 <Chip size="sm" color="primary" variant="solid">

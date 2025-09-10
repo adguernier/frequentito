@@ -9,6 +9,7 @@
     "lint": "eslint --fix"
   },
   "dependencies": {
+    "@heroui/avatar": "^2.2.21",
     "@heroui/button": "2.2.23",
     "@heroui/checkbox": "^2.3.23",
     "@heroui/chip": "^2.2.19",
