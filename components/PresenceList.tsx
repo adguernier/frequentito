@@ -6,7 +6,7 @@ type Row = {
   am: boolean;
   pm: boolean;
   // Supabase will return an array for embedded tables when no direct FK is defined
-  profiles?: { first_name: string | null; last_name: string | null }[] | null;
+  profiles?: { first_name: string | null; last_name: string | null } | null;
 };
 
 export default async function PresenceList() {
@@ -23,9 +23,9 @@ export default async function PresenceList() {
     return <p className="text-foreground-500 text-sm">Failed to load list.</p>;
   }
 
-  const items = (data as unknown as Row[] | null) ?? [];
+  const presences = (data as unknown as Row[] | null) ?? [];
 
-  if (items.length === 0) {
+  if (presences.length === 0) {
     return (
       <p className="text-foreground-500 text-sm">
         No one has shared their presence yet.
@@ -35,25 +35,28 @@ export default async function PresenceList() {
 
   return (
     <ul className="divide-y divide-default-200 w-full bg-content1 rounded-lg overflow-hidden">
-      {items.map((t) => {
-        const profile =
-          t.profiles && t.profiles.length > 0 ? t.profiles[0] : null;
+      {presences.map((presence) => {
         const fullName =
-          profile?.first_name || profile?.last_name
-            ? `${profile?.first_name ?? ""}${
-                profile?.first_name && profile?.last_name ? " " : ""
-              }${profile?.last_name ?? ""}`
+          presence.profiles?.first_name || presence.profiles?.last_name
+            ? `${presence.profiles?.first_name ?? ""}${
+                presence.profiles?.first_name && presence.profiles?.last_name
+                  ? " "
+                  : ""
+              }${presence.profiles?.last_name ?? ""}`
             : "Unnamed teammate";
         return (
-          <li key={t.user_id} className="flex items-center justify-between p-3">
+          <li
+            key={presence.user_id}
+            className="flex items-center justify-between p-3"
+          >
             <span>{fullName}</span>
             <span className="flex gap-2">
-              {t.am && (
+              {presence.am && (
                 <Chip size="sm" color="primary" variant="solid">
                   AM
                 </Chip>
               )}
-              {t.pm && (
+              {presence.pm && (
                 <Chip size="sm" color="primary" variant="solid">
                   PM
                 </Chip>
