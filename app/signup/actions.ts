@@ -3,6 +3,8 @@
 import { headers } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import z from "zod";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 const SignupFormSchema = z
   .object({
@@ -90,7 +92,23 @@ export async function signup(
       .eq("id", signUpData.user.id);
   }
 
-  return {
-    success: "We have created your account. You can now log in.",
-  };
+  // If we're not already signed in after sign up, try to sign in now.
+  if (!signUpData?.session) {
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: validated.data.email,
+      password: validated.data.password,
+    });
+    if (!signInError) {
+      revalidatePath("/", "layout");
+      redirect("/");
+    }
+    // If sign-in failed (e.g., email confirmation required), fall back to success message
+    return {
+      success: "We have created your account. You can now log in.",
+    };
+  }
+
+  // We have a session already; redirect home.
+  revalidatePath("/", "layout");
+  redirect("/");
 }
