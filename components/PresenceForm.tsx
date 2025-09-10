@@ -71,10 +71,6 @@ export const PresenceForm = () => {
       {/* Hidden fields to submit state to the server action */}
       <input type="hidden" name="am" value={String(am && !none)} />
       <input type="hidden" name="pm" value={String(pm && !none)} />
-      {/* Optional: specify day or note
-        <input type="date" name="day" />
-        <input type="text" name="note" />
-        */}
 
       <Button
         type="submit"
