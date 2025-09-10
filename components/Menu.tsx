@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Navbar,
   NavbarContent,
@@ -15,15 +15,36 @@ import NextLink from "next/link";
 
 import { Button } from "@heroui/button";
 import { logout } from "@/app/actions";
+import { createClient } from "@/utils/supabase/client";
 
 export const Menu = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [fullName, setFullName] = useState<string | null>(null);
 
   const menuItems = ["Presences", "Profile"];
   const routes: Record<string, string> = {
     Presences: "/",
     Profile: "/profile",
   };
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return;
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("first_name,last_name")
+        .eq("id", user.id)
+        .single();
+      if (!error) {
+        const name = [data?.first_name, data?.last_name]
+          .filter(Boolean)
+          .join(" ")
+          .trim();
+        setFullName(name || user.email || null);
+      }
+    });
+  }, []);
 
   return (
     <Navbar onMenuOpenChange={setIsMenuOpen} className="fixed">
@@ -35,6 +56,12 @@ export const Menu = () => {
         <NavbarBrand>
           <p className="font-bold text-inherit">Frequentito</p>
         </NavbarBrand>
+      </NavbarContent>
+
+      <NavbarContent justify="end">
+        {fullName && (
+          <NavbarItem className="text-sm opacity-80">{fullName}</NavbarItem>
+        )}
       </NavbarContent>
 
       <NavbarMenu className="mx-4 mt-2 flex flex-col items-center gap-4 py-4 text-xl">

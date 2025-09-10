@@ -1,25 +1,26 @@
 "use client";
 
 import { Button } from "@heroui/button";
-import { login } from "./actions";
 import { Input } from "@heroui/input";
-import { useActionState, useState } from "react";
 import Link from "next/link";
+import { useActionState, useState } from "react";
+import { signup } from "./actions";
 
 type Errors = {
   errors: string[];
   properties?: {
     email?: { errors: string[] };
     password?: { errors: string[] };
+    confirmPassword?: { errors: string[] };
   };
 };
 
-export default function LoginPage() {
-  const [state, action, pending] = useActionState(login, undefined);
+export default function SignupPage() {
+  const [state, action, pending] = useActionState(signup, undefined);
 
   const errors: Errors | undefined =
-    state && typeof state.errors !== "string"
-      ? (state.errors as Errors)
+    state && typeof (state as any).errors !== "string"
+      ? ((state as any).errors as Errors)
       : undefined;
 
   const [dirty, setDirty] = useState(false);
@@ -29,9 +30,14 @@ export default function LoginPage() {
 
   const emailErrors = errors?.properties?.email?.errors ?? [];
   const passwordErrors = errors?.properties?.password?.errors ?? [];
+  const confirmErrors = errors?.properties?.confirmPassword?.errors ?? [];
   const formErrors = errors?.errors ?? [];
   const authError =
-    typeof state?.errors === "string" ? state.errors : undefined;
+    state && typeof (state as any).errors === "string"
+      ? ((state as any).errors as string)
+      : undefined;
+  const success = (state as any)?.success as string | undefined;
+
   return (
     <div className="min-h-screen w-full flex items-center justify-center px-4 py-8">
       <form
@@ -40,7 +46,7 @@ export default function LoginPage() {
         className="w-full max-w-md sm:max-w-lg flex flex-col gap-5"
         aria-busy={pending}
       >
-        <h1 className="text-2xl font-semibold text-center">Frequentito</h1>
+        <h1 className="text-2xl font-semibold text-center">Create account</h1>
 
         <Input
           isRequired
@@ -67,16 +73,31 @@ export default function LoginPage() {
           errorMessage={
             !pending && !dirty ? passwordErrors.join("\n") : undefined
           }
-          placeholder="Enter your password"
+          placeholder="Create a password"
+        />
+        <Input
+          isRequired
+          size="lg"
+          className="w-full"
+          label="Confirm password"
+          labelPlacement="outside"
+          name="confirmPassword"
+          type="password"
+          onChange={handleChange}
+          isInvalid={!pending && !dirty && confirmErrors.length > 0}
+          errorMessage={
+            !pending && !dirty ? confirmErrors.join("\n") : undefined
+          }
+          placeholder="Repeat your password"
         />
         <Button type="submit" size="lg" className="w-full" isDisabled={pending}>
-          {pending ? "Logging in…" : "Log in"}
+          {pending ? "Creating account…" : "Sign up"}
         </Button>
 
         <p className="text-center text-sm">
-          Don’t have an account?{" "}
-          <Link href="/signup" className="underline">
-            Sign up
+          Already have an account? {" "}
+          <Link href="/login" className="underline">
+            Log in
           </Link>
         </p>
 
@@ -90,6 +111,12 @@ export default function LoginPage() {
                 ))}
               </ul>
             )}
+          </div>
+        )}
+
+        {!pending && success && (
+          <div role="status" className="text-sm text-green-600">
+            {success}
           </div>
         )}
       </form>
