@@ -23,6 +23,7 @@ export default function PushManager() {
       try {
         const reg = await navigator.serviceWorker.register("/sw.js");
         await navigator.serviceWorker.ready;
+        console.log("PushManager: service worker ready", reg);
 
         // Ask permission if not granted
         let permission = Notification.permission;
@@ -30,9 +31,12 @@ export default function PushManager() {
           permission = await Notification.requestPermission();
         if (permission !== "granted") return;
 
+        console.log("PushManager: permission granted");
+
         // Subscribe if not already
         const existing = await reg.pushManager.getSubscription();
         const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+        console.log(publicKey);
         if (!publicKey) return; // configured by env
         const sub =
           existing ||
