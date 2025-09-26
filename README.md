@@ -64,6 +64,11 @@ NEXT_PUBLIC_SUPABASE_ROLE_KEY=<your-role-key>
 npx tsx seed.ts
 ```
 
+### Reset database
+```shell
+npx supabase db reset --linked
+```
+
 ### Generate VAPID keys
 
 You can generate VAPID keys using the following command:
