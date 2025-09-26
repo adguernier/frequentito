@@ -164,11 +164,36 @@ export async function setPassword(
   redirect(next || "/");
 }
 
-// Update current user's profile (first_name, last_name)
+// Update current user's profile (first_name, last_name, avatar & metadata)
 const ProfileSchema = z.object({
-  first_name: z.string().trim().max(100).optional(),
-  last_name: z.string().trim().max(100).optional(),
-  avatar_url: z.url().max(500).optional(),
+  first_name: z.string().trim().max(100).optional().nullable(),
+  last_name: z.string().trim().max(100).optional().nullable(),
+  avatar_url: z.string().url().max(500).optional().nullable(),
+  avatar_width: z.coerce
+    .number()
+    .int()
+    .positive()
+    .max(4000)
+    .optional()
+    .nullable(),
+  avatar_height: z.coerce
+    .number()
+    .int()
+    .positive()
+    .max(4000)
+    .optional()
+    .nullable(),
+  avatar_color: z
+    .string()
+    .regex(/^#?[0-9a-fA-F]{6}$/)
+    .transform((v) => (v ? (v.startsWith("#") ? v : `#${v}`) : null))
+    .optional()
+    .nullable(),
+  avatar_remove: z
+    .string()
+    .transform((v) => v === "true")
+    .optional()
+    .nullable(),
 });
 
 export type ProfileActionState = { ok: true } | { error: string } | undefined;
@@ -184,16 +209,46 @@ export async function updateProfile(
   if (!user) return { error: "Not authenticated." };
 
   const parsed = ProfileSchema.safeParse({
-    first_name: formData.get("first_name")?.toString(),
-    last_name: formData.get("last_name")?.toString(),
-    avatar_url: formData.get("avatar_url")?.toString(),
+    first_name: formData.get("first_name")?.toString() ?? null,
+    last_name: formData.get("last_name")?.toString() ?? null,
+    avatar_url: formData.get("avatar_url")?.toString() || null,
+    avatar_width: formData.get("avatar_width")?.toString(),
+    avatar_height: formData.get("avatar_height")?.toString(),
+    avatar_color: formData.get("avatar_color")?.toString() || null,
+    avatar_remove: formData.get("avatar_remove")?.toString(),
   });
   if (!parsed.success) return { error: "Invalid input." };
 
-  const { first_name, last_name, avatar_url } = parsed.data;
+  const {
+    first_name,
+    last_name,
+    avatar_url,
+    avatar_width,
+    avatar_height,
+    avatar_color,
+    avatar_remove,
+  } = parsed.data;
+
+  const payload: Record<string, any> = {
+    first_name: first_name ?? null,
+    last_name: last_name ?? null,
+  };
+
+  if (avatar_remove) {
+    payload.avatar_url = null;
+    payload.avatar_width = null;
+    payload.avatar_height = null;
+    payload.avatar_color = null;
+  } else if (avatar_url) {
+    payload.avatar_url = avatar_url;
+    if (avatar_width) payload.avatar_width = avatar_width;
+    if (avatar_height) payload.avatar_height = avatar_height;
+    if (avatar_color) payload.avatar_color = avatar_color;
+  }
+
   const { error } = await supabase
     .from("profiles")
-    .update({ first_name, last_name, avatar_url })
+    .update(payload)
     .eq("id", user.id);
 
   if (error) return { error: error.message };
