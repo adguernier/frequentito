@@ -186,14 +186,14 @@ export async function updateProfile(
   const parsed = ProfileSchema.safeParse({
     first_name: formData.get("first_name")?.toString(),
     last_name: formData.get("last_name")?.toString(),
-    // avatar_url: formData.get("avatar_url")?.toString(),
+    avatar_url: formData.get("avatar_url")?.toString(),
   });
   if (!parsed.success) return { error: "Invalid input." };
 
-  const { first_name, last_name } = parsed.data;
+  const { first_name, last_name, avatar_url } = parsed.data;
   const { error } = await supabase
     .from("profiles")
-    .update({ first_name, last_name })
+    .update({ first_name, last_name, avatar_url })
     .eq("id", user.id);
 
   if (error) return { error: error.message };

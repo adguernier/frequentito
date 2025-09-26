@@ -5,7 +5,7 @@ import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { updateProfile, type ProfileActionState } from "@/app/actions";
 import { useRouter } from "next/navigation";
-// import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@/utils/supabase/client";
 
 export default function ProfileForm({
   first_name,
@@ -21,19 +21,24 @@ export default function ProfileForm({
     FormData
   >(updateProfile, undefined);
   const router = useRouter();
-  // const supabase = createClient(
-  //   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  //   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  // );
-  // const [uploading, setUploading] = useState(false);
-  // const [avatar, setAvatar] = useState<string | undefined>(avatar_url);
-  // const fileRef = useRef<HTMLInputElement | null>(null);
+  const supabase = createClient();
+  const [uploading, setUploading] = useState(false);
+  const [avatar, setAvatar] = useState<string | undefined>(avatar_url);
+  const [sessionUserId, setSessionUserId] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (state && "ok" in state && state.ok) {
       router.refresh();
     }
   }, [state, router]);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setSessionUserId(user?.id ?? null);
+    });
+  }, [supabase]);
 
   return (
     <section className="h-full w-full flex items-center justify-center px-4 py-8">
@@ -44,8 +49,7 @@ export default function ProfileForm({
         aria-busy={pending}
       >
         <h1 className="text-2xl font-semibold text-center">Your profile</h1>
-        {/* {avatar ? (
-          // eslint-disable-next-line @next/next/no-img-element
+        {avatar ? (
           <img
             src={avatar}
             alt="Avatar"
@@ -53,9 +57,9 @@ export default function ProfileForm({
           />
         ) : (
           <div className="w-20 h-20 rounded-full bg-default-200 self-center" />
-        )} */}
-        {/* <Input name="avatar_url" type="hidden" defaultValue={avatar ?? ""} /> */}
-        {/* <input
+        )}
+        <Input name="avatar_url" type="hidden" value={avatar ?? ""} readOnly />
+        <input
           ref={fileRef}
           type="file"
           accept="image/*"
@@ -63,10 +67,24 @@ export default function ProfileForm({
           onChange={async (e) => {
             const file = e.currentTarget.files?.[0];
             if (!file) return;
+            setUploadError(null);
+            if (!sessionUserId) {
+              setUploadError("Not authenticated – please log in again.");
+              return;
+            }
             try {
               setUploading(true);
+              const MAX_BYTES = 2 * 1024 * 1024; // 2MB
+              if (file.size > MAX_BYTES) {
+                throw new Error("File too large (max 2MB)");
+              }
+              if (!file.type.startsWith("image/")) {
+                throw new Error("File must be an image");
+              }
               const ext = file.name.split(".").pop();
-              const filePath = `avatars/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+              const safeExt =
+                ext?.toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+              const filePath = `${sessionUserId}/${Date.now()}_${Math.random().toString(36).slice(2)}.${safeExt}`;
               const { data, error } = await supabase.storage
                 .from("avatars")
                 .upload(filePath, file, { upsert: false });
@@ -75,23 +93,30 @@ export default function ProfileForm({
                 .from("avatars")
                 .getPublicUrl(data.path);
               setAvatar(publicUrl.publicUrl);
-            } catch (_) {
-              // ignore upload errors for now
+            } catch (error: any) {
+              setUploadError(
+                error?.message || "Error uploading avatar – please retry."
+              );
             } finally {
               setUploading(false);
             }
           }}
-        /> */}
-        {/* <Button
+        />
+        <Button
           type="button"
           onPress={() => fileRef.current?.click()}
           isDisabled={uploading}
           variant="flat"
         >
           {uploading ? "Uploading…" : "Upload avatar"}
-        </Button> */}
+        </Button>
         <Input name="first_name" label="First name" defaultValue={first_name} />
         <Input name="last_name" label="Last name" defaultValue={last_name} />
+        {uploadError && (
+          <p className="text-xs text-danger-500" role="alert">
+            {uploadError}
+          </p>
+        )}
         {state && "error" in state && state.error && (
           <p className="text-sm text-danger-500" role="alert">
             {state.error}
