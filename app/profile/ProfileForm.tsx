@@ -1,9 +1,8 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect } from "react";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
-import { Switch } from "@heroui/switch";
 import { updateProfile, type ProfileActionState } from "@/app/actions";
 import { useRouter } from "next/navigation";
 import { useAvatarUpload } from "./useAvatarUpload";
@@ -13,12 +12,10 @@ export default function ProfileForm({
   first_name,
   last_name,
   avatar_url,
-  notifications_enabled = true,
 }: {
   first_name: string;
   last_name: string;
   avatar_url?: string;
-  notifications_enabled?: boolean;
 }) {
   const [state, formAction, pending] = useActionState<
     ProfileActionState,
@@ -39,12 +36,7 @@ export default function ProfileForm({
     removeAvatar,
   } = useAvatarUpload(avatar_url);
 
-  // Local controlled state for notifications switch to ensure explicit true/false submission
-  const [notificationsEnabledLocal, setNotificationsEnabledLocal] =
-    useState<boolean>(notifications_enabled);
-  useEffect(() => {
-    setNotificationsEnabledLocal(notifications_enabled);
-  }, [notifications_enabled]);
+  // Notifications preference now managed via the menu bell icon; no related UI here.
 
   useEffect(() => {
     if (state && "ok" in state && state.ok) {
@@ -124,29 +116,6 @@ export default function ProfileForm({
         )}
         <Input name="first_name" label="First name" defaultValue={first_name} />
         <Input name="last_name" label="Last name" defaultValue={last_name} />
-        <div className="flex items-center justify-between gap-4 border border-default-200 rounded-medium px-3 py-2">
-          <div className="flex flex-col gap-1">
-            <span className="text-sm font-medium">Receive notifications</span>
-            <span className="text-xs text-default-500">
-              Presence updates from teammates
-            </span>
-          </div>
-          <input
-            type="hidden"
-            name="notifications_enabled"
-            value={notificationsEnabledLocal ? "true" : "false"}
-          />
-          <Switch
-            isSelected={notificationsEnabledLocal}
-            onValueChange={setNotificationsEnabledLocal}
-            aria-label="Toggle notifications"
-            size="sm"
-          />
-        </div>
-        <p className="text-xs text-default-500 -mt-2">
-          This controls whether you can receive web push alerts when others
-          update their presence.
-        </p>
         {uploadError && (
           <p className="text-xs text-danger-500" role="alert">
             {uploadError}

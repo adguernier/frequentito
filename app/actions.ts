@@ -168,7 +168,7 @@ export async function setPassword(
   redirect(next || "/");
 }
 
-// Update current user's profile (first_name, last_name, avatar & metadata, notifications preference)
+// Update current user's profile (first_name, last_name, avatar & metadata)
 const ProfileSchema = z.object({
   first_name: z.string().trim().max(100).optional().nullable(),
   last_name: z.string().trim().max(100).optional().nullable(),
@@ -205,11 +205,6 @@ const ProfileSchema = z.object({
     .transform((v) => v === "true")
     .optional()
     .nullable(),
-  notifications_enabled: z
-    .string()
-    .transform((v) => v === "true")
-    .optional()
-    .nullable(),
 });
 
 export type ProfileActionState = { ok: true } | { error: string } | undefined;
@@ -231,8 +226,6 @@ export async function updateProfile(
   const heightRaw = formData.get("avatar_height")?.toString() ?? "";
   const colorRaw = formData.get("avatar_color")?.toString() ?? "";
   const removeRaw = formData.get("avatar_remove")?.toString() ?? "false";
-  const notificationsRaw =
-    formData.get("notifications_enabled")?.toString() ?? "false"; // default false when unchecked
 
   const parsed = ProfileSchema.safeParse({
     first_name: firstNameRaw && firstNameRaw.length > 0 ? firstNameRaw : null,
@@ -242,7 +235,7 @@ export async function updateProfile(
     avatar_height: heightRaw && heightRaw.length > 0 ? heightRaw : undefined,
     avatar_color: colorRaw && colorRaw.length > 0 ? colorRaw : undefined,
     avatar_remove: removeRaw,
-    notifications_enabled: notificationsRaw,
+    // notifications removed from form; no preference update here
   });
   if (!parsed.success) return { error: "Invalid input." };
 
@@ -254,13 +247,11 @@ export async function updateProfile(
     avatar_height,
     avatar_color,
     avatar_remove,
-    notifications_enabled,
   } = parsed.data;
 
   const payload: Record<string, any> = {
     first_name: first_name ?? null,
     last_name: last_name ?? null,
-    notifications_enabled: notifications_enabled ?? false,
   };
 
   if (avatar_remove) {
