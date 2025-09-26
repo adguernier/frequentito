@@ -45,7 +45,7 @@ export default function ProfileForm({
   // User id retrieval & upload handling moved into useAvatarUpload hook.
 
   return (
-    <section className="h-full w-full flex flex-col items-center justify-start px-4 py-8 gap-4">
+    <section className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-8 gap-4">
       <form
         key={`${first_name}-${last_name}`}
         action={formAction}
