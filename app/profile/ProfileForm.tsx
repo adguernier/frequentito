@@ -6,6 +6,7 @@ import { Button } from "@heroui/button";
 import { updateProfile, type ProfileActionState } from "@/app/actions";
 import { useRouter } from "next/navigation";
 import { useAvatarUpload } from "./useAvatarUpload";
+import { logout } from "@/app/actions";
 
 export default function ProfileForm({
   first_name,
@@ -44,7 +45,7 @@ export default function ProfileForm({
   // User id retrieval & upload handling moved into useAvatarUpload hook.
 
   return (
-    <section className="h-full w-full flex items-center justify-center px-4 py-8">
+    <section className="h-full w-full flex flex-col items-center justify-start px-4 py-8 gap-4">
       <form
         key={`${first_name}-${last_name}`}
         action={formAction}
@@ -128,6 +129,11 @@ export default function ProfileForm({
         )}
         <Button type="submit" color="primary" isDisabled={pending}>
           {pending ? "Saving…" : "Save"}
+        </Button>
+      </form>
+      <form action={logout} className="w-full max-w-md">
+        <Button type="submit" color="danger" variant="flat" className="w-full">
+          Log Out
         </Button>
       </form>
     </section>
