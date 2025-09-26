@@ -10,7 +10,7 @@ export default async function ProfilePage() {
 
   const { data } = await supabase
     .from("profiles")
-    .select("first_name,last_name,avatar_url")
+    .select("first_name,last_name,avatar_url,notifications_enabled")
     .eq("id", user.id)
     .single();
 
@@ -19,6 +19,7 @@ export default async function ProfilePage() {
       first_name={data?.first_name ?? ""}
       last_name={data?.last_name ?? ""}
       avatar_url={data?.avatar_url ?? ""}
+      notifications_enabled={data?.notifications_enabled ?? true}
     />
   );
 }

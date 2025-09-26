@@ -68,3 +68,49 @@ export const SunFilledIcon = ({
     </g>
   </svg>
 );
+
+export const BellOnIcon = ({
+  size = 18,
+  width,
+  height,
+  ...props
+}: IconSvgProps) => (
+  <svg
+    viewBox="0 0 24 24"
+    width={size || width}
+    height={size || height}
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+    <path d="M13.73 21a2 2 0 01-3.46 0" />
+  </svg>
+);
+
+export const BellOffIcon = ({
+  size = 18,
+  width,
+  height,
+  ...props
+}: IconSvgProps) => (
+  <svg
+    viewBox="0 0 24 24"
+    width={size || width}
+    height={size || height}
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M13.73 21a2 2 0 01-3.46 0" />
+    <path d="M18.63 13A17.888 17.888 0 0018 8a6 6 0 00-9.33-4.95" />
+    <path d="M6.26 6.26A5.99 5.99 0 006 8c0 7-3 9-3 9h14" />
+    <path d="M2 2l20 20" />
+  </svg>
+);
