@@ -168,7 +168,14 @@ export async function setPassword(
 const ProfileSchema = z.object({
   first_name: z.string().trim().max(100).optional().nullable(),
   last_name: z.string().trim().max(100).optional().nullable(),
-  avatar_url: z.string().url().max(500).optional().nullable(),
+  // avatar_url is now a loose optional string (can be storage public URL or relative path)
+  avatar_url: z
+    .string()
+    .trim()
+    .max(500)
+    .optional()
+    .nullable()
+    .transform((v) => (v && v.length > 0 ? v : null)),
   avatar_width: z.coerce
     .number()
     .int()
@@ -208,14 +215,22 @@ export async function updateProfile(
   } = await supabase.auth.getUser();
   if (!user) return { error: "Not authenticated." };
 
+  const firstNameRaw = formData.get("first_name")?.toString() ?? null;
+  const lastNameRaw = formData.get("last_name")?.toString() ?? null;
+  const avatarUrlRaw = formData.get("avatar_url")?.toString() ?? "";
+  const widthRaw = formData.get("avatar_width")?.toString() ?? "";
+  const heightRaw = formData.get("avatar_height")?.toString() ?? "";
+  const colorRaw = formData.get("avatar_color")?.toString() ?? "";
+  const removeRaw = formData.get("avatar_remove")?.toString() ?? "false";
+
   const parsed = ProfileSchema.safeParse({
-    first_name: formData.get("first_name")?.toString() ?? null,
-    last_name: formData.get("last_name")?.toString() ?? null,
-    avatar_url: formData.get("avatar_url")?.toString() || null,
-    avatar_width: formData.get("avatar_width")?.toString(),
-    avatar_height: formData.get("avatar_height")?.toString(),
-    avatar_color: formData.get("avatar_color")?.toString() || null,
-    avatar_remove: formData.get("avatar_remove")?.toString(),
+    first_name: firstNameRaw && firstNameRaw.length > 0 ? firstNameRaw : null,
+    last_name: lastNameRaw && lastNameRaw.length > 0 ? lastNameRaw : null,
+    avatar_url: avatarUrlRaw && avatarUrlRaw.length > 0 ? avatarUrlRaw : null,
+    avatar_width: widthRaw && widthRaw.length > 0 ? widthRaw : undefined,
+    avatar_height: heightRaw && heightRaw.length > 0 ? heightRaw : undefined,
+    avatar_color: colorRaw && colorRaw.length > 0 ? colorRaw : undefined,
+    avatar_remove: removeRaw,
   });
   if (!parsed.success) return { error: "Invalid input." };
 
