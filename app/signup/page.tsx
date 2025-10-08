@@ -90,7 +90,7 @@ export default function SignupPage() {
           onChange={handleChange}
           isInvalid={!pending && !dirty && emailErrors.length > 0}
           errorMessage={!pending && !dirty ? emailErrors.join("\n") : undefined}
-          placeholder="Enter your email"
+          placeholder="Enter your email (@marmelab.com)"
         />
         <Input
           isRequired

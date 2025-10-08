@@ -18,7 +18,7 @@ const main = async () => {
   const PASSWORD = "testuser";
 
   for (let i = 1; i <= 10; i++) {
-    const email = `user${i}@example.com`;
+    const email = `user${i}@marmelab.com`;
     const password = PASSWORD;
     const first_name = `User${i}`;
     const last_name = "Demo";
