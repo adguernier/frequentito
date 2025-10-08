@@ -17,6 +17,9 @@ build: ## Build the project for production
 
 start: start-supabase start-app ## start the stack locally
 
+start-prod: start-supabase build ## Build and start the project
+	npm run start
+
 lint: ## Run ESLint with auto-fix
 	npm run lint
 
@@ -48,3 +51,16 @@ storybook: ## Start Storybook
 
 test: ## Run tests with Storybook
 	npm run test-storybook
+
+e2e: start-supabase db-reset seed ## Run headless e2e (Supabase ready; Playwright starts app)
+	@echo "Running Playwright tests (headless)"
+	npx playwright test
+
+e2e-ui: start-supabase db-reset seed ## Run e2e in UI mode (Supabase ready; Playwright starts app)
+	@echo "Running Playwright tests in UI mode"
+	npx playwright test --ui
+
+e2e-codegen: start-supabase db-reset seed ## Run Playwright codegen (Supabase ready; Playwright starts app)
+	npx playwright codegen
+
+e2e-stop: stop-supabase ## Stop local Supabase started for e2e
