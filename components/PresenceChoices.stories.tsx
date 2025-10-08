@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, fn } from "storybook/test";
 import React from "react";
 import PresenceChoices from "./PresenceChoices";
 
@@ -49,6 +50,22 @@ export const Default: Story = {
       </PresenceChoices>
     </div>
   ),
+  play: async ({ canvas }) => {
+    // Test that components render with expected labels
+    await expect(canvas.getByText("In morning")).toBeInTheDocument();
+    await expect(canvas.getByText("In afternoon")).toBeInTheDocument();
+    await expect(canvas.getByText("Not coming")).toBeInTheDocument();
+
+    // Test that buttons have correct role
+    await expect(canvas.getByText("In morning")).toHaveRole("button");
+    await expect(canvas.getByText("In afternoon")).toHaveRole("button");
+    await expect(canvas.getByText("Not coming")).toHaveRole("button");
+
+    // Test that buttons are not disabled when component is enabled
+    await expect(canvas.getByText("In morning")).not.toBeDisabled();
+    await expect(canvas.getByText("In afternoon")).not.toBeDisabled();
+    await expect(canvas.getByText("Not coming")).not.toBeDisabled();
+  },
 };
 
 // Story with morning selected
@@ -74,6 +91,19 @@ export const MorningSelected: Story = {
       </PresenceChoices>
     </div>
   ),
+  play: async ({ canvas }) => {
+    const morningButton = canvas.getByText("In morning");
+    const afternoonButton = canvas.getByText("In afternoon");
+    const notComingButton = canvas.getByText("Not coming");
+
+    // Test button color/appearance when selected vs unselected
+    // Morning button should be selected (solid variant)
+    await expect(morningButton).toHaveAttribute("aria-pressed", "true");
+
+    // Other buttons should not be selected
+    await expect(afternoonButton).toHaveAttribute("aria-pressed", "false");
+    await expect(notComingButton).toHaveAttribute("aria-pressed", "false");
+  },
 };
 
 // Story with afternoon selected
@@ -99,6 +129,58 @@ export const AfternoonSelected: Story = {
       </PresenceChoices>
     </div>
   ),
+};
+
+// Test story for onToggle callback functionality
+const mockMorningToggle = fn().mockImplementation(() => {
+  console.log("Morning toggled");
+});
+const mockAfternoonToggle = fn().mockImplementation(() => {
+  console.log("Afternoon toggled");
+});
+const mockNotComingToggle = fn().mockImplementation(() => {
+  console.log("Not coming toggled");
+});
+export const CallbackTest: Story = {
+  args: {
+    disabled: false,
+  },
+  render: (args) => (
+    <div className="w-96" data-testid="presence-choices-container">
+      <PresenceChoices {...args}>
+        <PresenceChoices.MorningChoice
+          selected={false}
+          onToggle={mockMorningToggle}
+        />
+        <PresenceChoices.AfternoonChoice
+          selected={false}
+          onToggle={mockAfternoonToggle}
+        />
+        <PresenceChoices.NotComingButton
+          selected={false}
+          onToggle={mockNotComingToggle}
+        />
+      </PresenceChoices>
+    </div>
+  ),
+  play: async ({ canvas, userEvent }) => {
+    mockMorningToggle.mockClear();
+    mockAfternoonToggle.mockClear();
+    mockNotComingToggle.mockClear();
+
+    const morningButton = canvas.getByText("In morning");
+    const afternoonButton = canvas.getByText("In afternoon");
+    const notComingButton = canvas.getByText("Not coming");
+
+    // Test that clicking buttons triggers onToggle callbacks
+    await userEvent.click(morningButton);
+    await userEvent.click(afternoonButton);
+    await userEvent.click(notComingButton);
+
+    await expect(mockMorningToggle).toHaveBeenCalledTimes(1);
+    await expect(mockAfternoonToggle).toHaveBeenCalledTimes(1);
+    await expect(mockNotComingToggle).toHaveBeenCalledTimes(1);
+  },
 };
 
 // Story with not coming selected
@@ -149,6 +231,26 @@ export const Disabled: Story = {
       </PresenceChoices>
     </div>
   ),
+  play: async ({ canvas }) => {
+    const morningButton = canvas.getByText("In morning");
+    const afternoonButton = canvas.getByText("In afternoon");
+    const notComingButton = canvas.getByText("Not coming");
+
+    // Test that buttons appear disabled when component is disabled
+    await expect(morningButton).toBeDisabled();
+    await expect(afternoonButton).toBeDisabled();
+    await expect(notComingButton).toBeDisabled();
+
+    // Test that aria-pressed state is maintained even when disabled
+    await expect(morningButton).toHaveAttribute("aria-pressed", "true");
+    await expect(afternoonButton).toHaveAttribute("aria-pressed", "false");
+    await expect(notComingButton).toHaveAttribute("aria-pressed", "false");
+
+    // Test that disabled buttons have pointer-events: none (cannot be clicked)
+    // We don't attempt to click them as they will throw an error due to pointer-events: none
+    const morningStyle = window.getComputedStyle(morningButton);
+    await expect(morningStyle.pointerEvents).toBe("none");
+  },
 };
 
 // Interactive playground
