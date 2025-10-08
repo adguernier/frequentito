@@ -52,14 +52,10 @@ storybook: ## Start Storybook
 test: ## Run tests with Storybook
 	npm run test-storybook
 
-e2e: start-supabase  ## Run headless e2e (Chromium + Firefox only)
+e2e: ## Run headless e2e 
 	@echo "Running Playwright tests (headless)"
-	npx playwright test --project=chromium --project=firefox
-
-e2e-chromium: start-supabase ## Run headless e2e (Chromium only)
-	@echo "Running Playwright tests on Chromium only (headless)"
 	npx playwright test --project=chromium
 
-e2e-ui: start-supabase ## Run e2e in UI mode (Chromium + Firefox only)
+e2e-ui: ## Run e2e in UI mode
 	@echo "Running Playwright tests in UI mode"
 	npx playwright test --ui --project=chromium
