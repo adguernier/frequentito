@@ -1,25 +1,47 @@
 "use client";
 
 import { Button } from "@heroui/button";
-import { useActionState, useState } from "react";
+import PresenceChoices from "@/components/PresenceChoices";
+import { useActionState, useEffect, useState } from "react";
 import { upsertPresence } from "./actions";
 
-export const PresenceForm = () => {
+type PresenceFormProps = {
+  initialAm?: boolean;
+  initialPm?: boolean;
+  lockedInitially?: boolean;
+};
+
+export const PresenceForm = ({
+  initialAm = false,
+  initialPm = false,
+  lockedInitially = false,
+}: PresenceFormProps) => {
   const [state, action, pending] = useActionState(upsertPresence, undefined);
-  const [am, setAm] = useState(false);
-  const [pm, setPm] = useState(false);
-  const [none, setNone] = useState(false);
+  const [am, setAm] = useState<boolean>(initialAm);
+  const [pm, setPm] = useState<boolean>(initialPm);
+  const [notComing, setNotComing] = useState<boolean>(!initialAm && !initialPm);
+  const [locked, setLocked] = useState<boolean>(lockedInitially);
+
+  useEffect(() => {
+    setNotComing(!am && !pm);
+  }, [am, pm]);
+
+  useEffect(() => {
+    if (state && "ok" in state && state.ok) {
+      setLocked(true);
+    }
+  }, [state]);
 
   const toggleAm = () => {
     setAm((v) => !v);
-    setNone(false);
+    setNotComing(false);
   };
   const togglePm = () => {
     setPm((v) => !v);
-    setNone(false);
+    setNotComing(false);
   };
   const toggleNone = () => {
-    setNone((v) => {
+    setNotComing((v) => {
       const next = !v;
       if (next) {
         setAm(false);
@@ -28,6 +50,37 @@ export const PresenceForm = () => {
       return next;
     });
   };
+  if (locked) {
+    return (
+      <div
+        className="w-full max-w-md flex flex-col gap-6 items-center"
+        aria-busy={pending}
+      >
+        <h1 className="text-2xl font-semibold text-center">
+          Today I am coming...
+        </h1>
+        <PresenceChoices disabled>
+          <PresenceChoices.MorningChoice selected={am} />
+          <PresenceChoices.AfternoonChoice selected={pm} />
+          <PresenceChoices.NotComingButton selected={notComing} />
+        </PresenceChoices>
+        <Button
+          type="button"
+          size="lg"
+          color="default"
+          variant="flat"
+          className="w-full"
+          isDisabled={pending}
+          onPress={() => {
+            setLocked(false);
+          }}
+        >
+          Update my presence
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <form
       action={action}
@@ -38,41 +91,17 @@ export const PresenceForm = () => {
         Today I am coming...
       </h1>
 
-      <div className="w-full grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Button
-          size="lg"
-          className="w-full"
-          variant={am ? "solid" : "flat"}
-          color={am ? "primary" : "default"}
-          aria-pressed={am}
-          onPress={toggleAm}
-        >
-          In morning
-        </Button>
-        <Button
-          size="lg"
-          className="w-full"
-          variant={pm ? "solid" : "flat"}
-          color={pm ? "primary" : "default"}
-          aria-pressed={pm}
-          onPress={togglePm}
-        >
-          In afternoon
-        </Button>
-        <Button
-          size="lg"
-          className="w-full"
-          variant={none ? "solid" : "flat"}
-          color={none ? "danger" : "default"}
-          aria-pressed={none}
-          onPress={toggleNone}
-        >
-          Not coming
-        </Button>
-      </div>
+      <PresenceChoices disabled={locked || pending}>
+        <PresenceChoices.MorningChoice selected={am} onToggle={toggleAm} />
+        <PresenceChoices.AfternoonChoice selected={pm} onToggle={togglePm} />
+        <PresenceChoices.NotComingButton
+          selected={notComing}
+          onToggle={toggleNone}
+        />
+      </PresenceChoices>
       {/* Hidden fields to submit state to the server action */}
-      <input type="hidden" name="am" value={String(am && !none)} />
-      <input type="hidden" name="pm" value={String(pm && !none)} />
+      <input type="hidden" name="am" value={String(am && !notComing)} />
+      <input type="hidden" name="pm" value={String(pm && !notComing)} />
 
       <Button
         type="submit"
@@ -81,7 +110,7 @@ export const PresenceForm = () => {
         className="w-full"
         isDisabled={pending}
       >
-        {pending ? "Saving…" : "Let's go"}
+        {pending ? "Saving…" : "Save"}
       </Button>
 
       {state && "error" in state && state.error && (
@@ -90,7 +119,7 @@ export const PresenceForm = () => {
         </p>
       )}
       {state && "ok" in state && state.ok && (
-        <p className="text-sm text-success-500">Updated!</p>
+        <p className="text-sm text-success-500">Saved!</p>
       )}
     </form>
   );
