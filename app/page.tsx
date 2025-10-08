@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { PresenceForm } from "@/app/PresenceForm";
-import PresenceList from "@/app/PresenceList";
+import PresenceListContainer from "@/app/PresenceListContainer";
 import PushManager from "@/app/PushManager";
 import { createClient } from "@/utils/supabase/server";
 
@@ -43,7 +43,7 @@ export default async function Home() {
           fallback={<p className="text-sm text-foreground-500">Loading…</p>}
         >
           {/* Server component renders on the server; Suspense allows streaming */}
-          <PresenceList />
+          <PresenceListContainer />
         </Suspense>
       </div>
     </section>
