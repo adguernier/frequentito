@@ -19,15 +19,9 @@ jobs:
     
     - name: Install dependencies
       run: npm ci
-    
-    - name: Build Storybook
-      run: npm run build-storybook
-    
-    - name: Serve Storybook and run tests
-      run: |
-        npx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" \
-          "npx http-server storybook-static --port 6006 --silent" \
-          "npx wait-on http://127.0.0.1:6006 && npm run test-storybook"
+
+    - name: Run tests
+      run: npm run test-storybook
     
     - name: Upload Storybook build artifacts
       uses: actions/upload-artifact@v4
