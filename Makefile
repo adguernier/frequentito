@@ -52,13 +52,13 @@ storybook: ## Start Storybook
 test: ## Run tests with Storybook
 	npm run test-storybook
 
-e2e: start-supabase db-reset seed ## Run headless e2e (Supabase ready; Playwright starts app)
+e2e: start-supabase db-reset seed ## Run headless e2e (Chromium + Firefox only)
 	@echo "Running Playwright tests (headless)"
-	npx playwright test
+	npx playwright test --project=chromium --project=firefox
 
-e2e-ui: start-supabase db-reset seed ## Run e2e in UI mode (Supabase ready; Playwright starts app)
+e2e-ui: start-supabase db-reset seed ## Run e2e in UI mode (Chromium + Firefox only)
 	@echo "Running Playwright tests in UI mode"
-	npx playwright test --ui
+	npx playwright test --ui --project=chromium --project=firefox
 
 e2e-codegen: start-supabase db-reset seed ## Run Playwright codegen (Supabase ready; Playwright starts app)
 	npx playwright codegen
