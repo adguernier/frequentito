@@ -1,22 +1,6 @@
-## Invite users and let them set a password
+# Frequentito
 
-Supabase invite emails send a magic link including `token_hash` and `type`.
-
-1. Ensure the confirm route is configured in Supabase Auth → URL Configuration:
-	- Site URL: `https://<your-domain>`
-	- Redirect URLs: include `/auth/confirm`
-2. In the email template (Invite user), set the action URL to point to `/auth/confirm` with `next` to a local set-password page, e.g.:
-
-	`${SITE_URL}/auth/confirm?token_hash={{ .TokenHash }}&type={{ .Type }}&next=/auth/set-password`
-
-3. Our `/auth/confirm` handler verifies the token and redirects to `next` if valid.
-4. The `/auth/set-password` page lets the user set their password via a server action calling `supabase.auth.updateUser({ password })`.
-
-# Next.js & HeroUI Template
-
-This is a template for creating applications using Next.js 14 (app directory) and HeroUI (v2).
-
-[Try it on CodeSandbox](https://githubbox.com/heroui-inc/heroui/next-app-template)
+A simple app to manage office attendance and receive updates.
 
 ## Technologies Used
 
@@ -43,14 +27,9 @@ make install
 make start
 ```
 
-### Seeding the database
+### Seed the database
 ```shell
 make seed
-```
-
-### Reset the database
-```shell
-make db-reset
 ```
 
 ### Generate VAPID keys
@@ -68,6 +47,34 @@ NEXT_PUBLIC_VAPID_PUBLIC_KEY=<your-public-key>
 VAPID_PRIVATE_KEY=<your-private-key>
 VAPID_SUBJECT=<your-subject>
 ```
+
+## Development
+
+### Run the tests
+
+```bash
+make test
+```
+
+### Run the Storybook
+
+```bash
+make storybook
+```
+
+## Invite users and let them set a password
+
+Supabase invite emails send a magic link including `token_hash` and `type`.
+
+1. Ensure the confirm route is configured in Supabase Auth → URL Configuration:
+	- Site URL: `https://<your-domain>`
+	- Redirect URLs: include `/auth/confirm`
+2. In the email template (Invite user), set the action URL to point to `/auth/confirm` with `next` to a local set-password page, e.g.:
+
+	`${SITE_URL}/auth/confirm?token_hash={{ .TokenHash }}&type={{ .Type }}&next=/auth/set-password`
+
+3. Our `/auth/confirm` handler verifies the token and redirects to `next` if valid.
+4. The `/auth/set-password` page lets the user set their password via a server action calling `supabase.auth.updateUser({ password })`.
 
 ## License
 
