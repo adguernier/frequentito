@@ -5,7 +5,7 @@ export function createAdminClient() {
   const serviceKey =
     process.env.SUPABASE_SERVICE_ROLE_KEY ||
     process.env.SERVICE_ROLE_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_ROLE_KEY; // fallback for local dev
+    process.env.SUPABASE_ROLE_KEY; // fallback for local dev
   if (!serviceKey) throw new Error("Missing service role key for admin client");
 
   return createServerClient(url, serviceKey, {
