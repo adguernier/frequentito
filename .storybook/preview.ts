@@ -1,0 +1,32 @@
+import type { Preview } from "@storybook/nextjs-vite";
+import React from "react";
+import { HeroUIProvider } from "@heroui/system";
+import "../styles/globals.css";
+
+const preview: Preview = {
+  parameters: {
+    controls: {
+      matchers: {
+        color: /(background|color)$/i,
+        date: /Date$/i,
+      },
+    },
+
+    nextjs: {
+      appDirectory: true,
+    },
+
+    a11y: {
+      // 'todo' - show a11y violations in the test UI only
+      // 'error' - fail CI on a11y violations
+      // 'off' - skip a11y checks entirely
+      test: "todo"
+    }
+  },
+  decorators: [
+    (Story) =>
+      React.createElement(HeroUIProvider, null, React.createElement(Story)),
+  ],
+};
+
+export default preview;
