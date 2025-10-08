@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 
 import { defineConfig } from 'vitest/config';
 
+// @ts-ignore
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 
 const dirname =
