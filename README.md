@@ -56,7 +56,7 @@ NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
 DATABASE_URL=<your-database-url>
 JWT_SECRET=<your-jwt-secret>
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
-NEXT_PUBLIC_SUPABASE_ROLE_KEY=<your-role-key>
+SUPABASE_ROLE_KEY=<your-role-key>
 ```
 
 ### Seeding database

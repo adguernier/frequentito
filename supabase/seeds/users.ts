@@ -12,7 +12,7 @@ const main = async () => {
   const seed = await createSeedClient();
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ROLE_KEY!
+    process.env.SUPABASE_ROLE_KEY!
   );
 
   const PASSWORD = "testuser";
