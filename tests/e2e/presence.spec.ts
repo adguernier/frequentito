@@ -1,17 +1,10 @@
 import { test, expect } from "./fixtures/testWithDb";
+import { login } from "./helpers/login";
 
 test.describe("Presence submission", () => {
   test("user can submit presence and view locked state", async ({ page }) => {
-    // Log in
-    await page.goto("/login");
-    await page.fill('input[name="email"]', "user1@marmelab.com");
-    await page.fill('input[name="password"]', "testuser");
-    await page.getByRole("button", { name: "Log in" }).click();
-
-    // Ensure presence page is shown
-    await expect(
-      page.getByRole("heading", { name: "Today I am coming..." })
-    ).toBeVisible();
+    // Use login helper instead of inline code
+    await login(page);
 
     // Choose a presence option and save
     const morning = page.getByRole("button", { name: "In morning" });
