@@ -14,6 +14,43 @@ export function RealtimePresenceList(props: PresenceListProps) {
 
   useEffect(() => {
     const supabase = createClient();
+
+    const updatePresences = async (payload: { new: PresenceData }) => {
+      const updatedPresence = payload.new;
+
+      if (!updatedPresence.am && !updatedPresence.pm) {
+        setPresences((prev) =>
+          prev.filter(
+            (presence) => presence.user_id !== updatedPresence.user_id
+          )
+        );
+        return;
+      }
+
+      updatedPresence.profiles = (
+        await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", updatedPresence.user_id)
+          .maybeSingle<{
+            first_name: string | null;
+            last_name: string | null;
+            avatar_url: string | null;
+          }>()
+      ).data;
+
+      setPresences((prev) => {
+        if (!prev.find((p) => p.user_id === updatedPresence.user_id)) {
+          return [...prev, updatedPresence];
+        }
+        return prev.map((presence) =>
+          presence.user_id === updatedPresence.user_id
+            ? updatedPresence
+            : presence
+        );
+      });
+    };
+
     const channel = supabase
       .channel("realtime presences")
       .on(
@@ -23,10 +60,7 @@ export function RealtimePresenceList(props: PresenceListProps) {
           schema: "public",
           table: "presences",
         },
-        (payload) => {
-          const newPresence = payload.new as PresenceData;
-          setPresences((prev) => [...prev, newPresence]);
-        }
+        updatePresences
       )
       .on(
         "postgres_changes",
@@ -35,32 +69,7 @@ export function RealtimePresenceList(props: PresenceListProps) {
           schema: "public",
           table: "presences",
         },
-        (payload) => {
-          const updatedPresence = payload.new as PresenceData;
-          setPresences((prev) =>
-            prev.map((presence) =>
-              presence.user_id === updatedPresence.user_id
-                ? updatedPresence
-                : presence
-            )
-          );
-        }
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "DELETE",
-          schema: "public",
-          table: "presences",
-        },
-        (payload) => {
-          const deletedPresence = payload.old as PresenceData;
-          setPresences((prev) =>
-            prev.filter(
-              (presence) => presence.user_id !== deletedPresence.user_id
-            )
-          );
-        }
+        updatePresences
       )
       .subscribe();
 
