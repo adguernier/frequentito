@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint --fix",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "test-storybook": "vitest --project=storybook"
   },
   "dependencies": {
     "@heroui/avatar": "^2.2.21",

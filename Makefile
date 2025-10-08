@@ -45,3 +45,6 @@ apply-migrations: ## Apply all pending migrations
 
 storybook: ## Start Storybook
 	npm run storybook
+
+test: ## Run tests with Storybook
+	npm run test-storybook
