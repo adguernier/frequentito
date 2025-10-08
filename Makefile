@@ -38,4 +38,7 @@ stop-supabase: ## stop local supabase
 stop: stop-supabase ## stop the stack locally
 
 db-reset: ## Reset the database
-	npx supabase db reset --linked
+	npx supabase db reset
+
+apply-migrations: ## Apply all pending migrations
+	npx supabase migration up
