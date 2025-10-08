@@ -6,7 +6,9 @@ import "./envConfig.ts";
 export default defineConfig({
   adapter: async () => {
     const client = new Client({
-      connectionString: process.env.DATABASE_URL!,
+      connectionString:
+        process.env.DATABASE_URL ||
+        "postgres://postgres:postgres@127.0.0.1:54322/postgres",
     });
     await client.connect();
     return new SeedPg(client);

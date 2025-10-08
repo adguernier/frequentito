@@ -33,40 +33,24 @@ This is a template for creating applications using Next.js 14 (app directory) an
 
 ### Install dependencies
 
-You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
+```bash
+make install
+```
+
+### Start the stack locally
 
 ```bash
-npm install
+make start
 ```
 
-### Run the development server
-
-```bash
-npm run dev
-```
-
-### Start Supabase
+### Seeding the database
 ```shell
-supabase start --ignore-health-check
+make seed
 ```
 
-Add the output to your environment variables:
-```bash
-NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
-DATABASE_URL=<your-database-url>
-JWT_SECRET=<your-jwt-secret>
-NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
-SUPABASE_ROLE_KEY=<your-role-key>
-```
-
-### Seeding database
+### Reset the database
 ```shell
-npx tsx seed.ts
-```
-
-### Reset database
-```shell
-npx supabase db reset --linked
+make db-reset
 ```
 
 ### Generate VAPID keys
@@ -87,4 +71,4 @@ VAPID_SUBJECT=<your-subject>
 
 ## License
 
-Licensed under the [MIT license](https://github.com/heroui-inc/next-app-template/blob/main/LICENSE).
+Licensed under the [MIT license](./LICENSE).

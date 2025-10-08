@@ -9,14 +9,33 @@ help:
 install: ## Install npm dependencies
 	npm install
 
-dev: ## Start development server
+start-app: ## Start development server
 	npm run dev
 
 build: ## Build the project for production
 	npm run build
 
-start: ## Start production server
-	npm run start
+start: start-supabase start-app ## start the stack locally
 
 lint: ## Run ESLint with auto-fix
 	npm run lint
+
+seed-init: ## Initialize Snaplet Seed client
+	npx @snaplet/seed init
+
+seed-sync: ## Sync Snaplet Seed client with database schema
+	npx @snaplet/seed sync
+
+seed: ## Seed the database with sample data
+	npx tsx seed.ts
+
+start-supabase: ## start supabase locally
+	npx supabase start
+
+stop-supabase: ## stop local supabase
+	npx supabase stop
+
+stop: stop-supabase ## stop the stack locally
+
+db-reset: ## Reset the database
+	npx supabase db reset --linked
