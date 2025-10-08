@@ -42,3 +42,6 @@ db-reset: ## Reset the database
 
 apply-migrations: ## Apply all pending migrations
 	npx supabase migration up
+
+storybook: ## Start Storybook
+	npm run storybook
