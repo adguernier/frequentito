@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@heroui/button";
+import PresenceChoices from "@/components/PresenceChoices";
 import { useActionState, useEffect, useState } from "react";
 import { upsertPresence } from "./actions";
 
@@ -18,11 +19,11 @@ export const PresenceForm = ({
   const [state, action, pending] = useActionState(upsertPresence, undefined);
   const [am, setAm] = useState<boolean>(initialAm);
   const [pm, setPm] = useState<boolean>(initialPm);
-  const [none, setNone] = useState<boolean>(!initialAm && !initialPm);
+  const [notComing, setNotComing] = useState<boolean>(!initialAm && !initialPm);
   const [locked, setLocked] = useState<boolean>(lockedInitially);
 
   useEffect(() => {
-    setNone(!am && !pm);
+    setNotComing(!am && !pm);
   }, [am, pm]);
 
   useEffect(() => {
@@ -33,14 +34,14 @@ export const PresenceForm = ({
 
   const toggleAm = () => {
     setAm((v) => !v);
-    setNone(false);
+    setNotComing(false);
   };
   const togglePm = () => {
     setPm((v) => !v);
-    setNone(false);
+    setNotComing(false);
   };
   const toggleNone = () => {
-    setNone((v) => {
+    setNotComing((v) => {
       const next = !v;
       if (next) {
         setAm(false);
@@ -58,38 +59,11 @@ export const PresenceForm = ({
         <h1 className="text-2xl font-semibold text-center">
           Today I am coming...
         </h1>
-        <div className="w-full grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <Button
-            size="lg"
-            className="w-full"
-            variant={am ? "solid" : "flat"}
-            color={am ? "primary" : "default"}
-            aria-pressed={am}
-            isDisabled
-          >
-            In morning
-          </Button>
-          <Button
-            size="lg"
-            className="w-full"
-            variant={pm ? "solid" : "flat"}
-            color={pm ? "primary" : "default"}
-            aria-pressed={pm}
-            isDisabled
-          >
-            In afternoon
-          </Button>
-          <Button
-            size="lg"
-            className="w-full"
-            variant={none ? "solid" : "flat"}
-            color={none ? "danger" : "default"}
-            aria-pressed={none}
-            isDisabled
-          >
-            Not coming
-          </Button>
-        </div>
+        <PresenceChoices disabled>
+          <PresenceChoices.MorningChoice selected={am} />
+          <PresenceChoices.AfternoonChoice selected={pm} />
+          <PresenceChoices.NotComingButton selected={notComing} />
+        </PresenceChoices>
         <Button
           type="button"
           size="lg"
@@ -117,44 +91,17 @@ export const PresenceForm = ({
         Today I am coming...
       </h1>
 
-      <div className="w-full grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Button
-          size="lg"
-          className="w-full"
-          variant={am ? "solid" : "flat"}
-          color={am ? "primary" : "default"}
-          aria-pressed={am}
-          onPress={toggleAm}
-          isDisabled={locked || pending}
-        >
-          In morning
-        </Button>
-        <Button
-          size="lg"
-          className="w-full"
-          variant={pm ? "solid" : "flat"}
-          color={pm ? "primary" : "default"}
-          aria-pressed={pm}
-          onPress={togglePm}
-          isDisabled={locked || pending}
-        >
-          In afternoon
-        </Button>
-        <Button
-          size="lg"
-          className="w-full"
-          variant={none ? "solid" : "flat"}
-          color={none ? "danger" : "default"}
-          aria-pressed={none}
-          onPress={toggleNone}
-          isDisabled={locked || pending}
-        >
-          Not coming
-        </Button>
-      </div>
+      <PresenceChoices disabled={locked || pending}>
+        <PresenceChoices.MorningChoice selected={am} onToggle={toggleAm} />
+        <PresenceChoices.AfternoonChoice selected={pm} onToggle={togglePm} />
+        <PresenceChoices.NotComingButton
+          selected={notComing}
+          onToggle={toggleNone}
+        />
+      </PresenceChoices>
       {/* Hidden fields to submit state to the server action */}
-      <input type="hidden" name="am" value={String(am && !none)} />
-      <input type="hidden" name="pm" value={String(pm && !none)} />
+      <input type="hidden" name="am" value={String(am && !notComing)} />
+      <input type="hidden" name="pm" value={String(pm && !notComing)} />
 
       <Button
         type="submit"
