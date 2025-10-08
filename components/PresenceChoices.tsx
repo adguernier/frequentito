@@ -42,56 +42,47 @@ const useDisabled = (override?: boolean) => {
   return Boolean(override ?? ctx.disabled);
 };
 
-const MorningChoice = ({ selected, onToggle, disabled }: ItemProps) => {
+type ChoiceProps = ItemProps & {
+  label: string;
+  selectedColor?: "default" | "primary" | "danger" | "success" | "warning";
+};
+
+const Choice = ({
+  label,
+  selected,
+  selectedColor = "primary",
+  onToggle,
+  disabled,
+}: ChoiceProps) => {
   const isDisabled = useDisabled(disabled);
+  const color = selected ? selectedColor : "default";
+  const variant = selected ? "solid" : ("flat" as const);
   return (
     <Button
       size="lg"
       className="w-full"
-      variant={selected ? "solid" : "flat"}
-      color={selected ? "primary" : "default"}
+      variant={variant}
+      color={color}
       aria-pressed={selected}
       onPress={onToggle}
       isDisabled={isDisabled}
     >
-      In morning
+      {label}
     </Button>
   );
 };
 
-const AfternoonChoice = ({ selected, onToggle, disabled }: ItemProps) => {
-  const isDisabled = useDisabled(disabled);
-  return (
-    <Button
-      size="lg"
-      className="w-full"
-      variant={selected ? "solid" : "flat"}
-      color={selected ? "primary" : "default"}
-      aria-pressed={selected}
-      onPress={onToggle}
-      isDisabled={isDisabled}
-    >
-      In afternoon
-    </Button>
-  );
-};
+const MorningChoice = (props: ItemProps) => (
+  <Choice label="In morning" selectedColor="primary" {...props} />
+);
 
-const NotComingChoice = ({ selected, onToggle, disabled }: ItemProps) => {
-  const isDisabled = useDisabled(disabled);
-  return (
-    <Button
-      size="lg"
-      className="w-full"
-      variant={selected ? "solid" : "flat"}
-      color={selected ? "danger" : "default"}
-      aria-pressed={selected}
-      onPress={onToggle}
-      isDisabled={isDisabled}
-    >
-      Not coming
-    </Button>
-  );
-};
+const AfternoonChoice = (props: ItemProps) => (
+  <Choice label="In afternoon" selectedColor="primary" {...props} />
+);
+
+const NotComingButton = (props: ItemProps) => (
+  <Choice label="Not coming" selectedColor="danger" {...props} />
+);
 
 type Compound = React.FC<RootProps> & {
   MorningChoice: React.FC<ItemProps>;
@@ -102,6 +93,6 @@ type Compound = React.FC<RootProps> & {
 const PresenceChoices = Root as Compound;
 PresenceChoices.MorningChoice = MorningChoice;
 PresenceChoices.AfternoonChoice = AfternoonChoice;
-PresenceChoices.NotComingButton = NotComingChoice;
+PresenceChoices.NotComingButton = NotComingButton;
 
 export default PresenceChoices;
