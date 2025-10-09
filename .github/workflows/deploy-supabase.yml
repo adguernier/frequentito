@@ -15,7 +15,7 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: production # You can create this environment in GitHub settings
+    environment: production
 
     steps:
       - uses: actions/checkout@v4
