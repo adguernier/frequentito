@@ -11,7 +11,7 @@ const meta: Meta<typeof PresenceList> = {
     docs: {
       description: {
         component:
-          "A component that displays a list of user presences with their morning/afternoon availability and profile information.",
+          "A component that displays a list of user presences with their morning/afternoon availability and profile information. Users who are not coming are visually greyed out for easy distinction.",
       },
     },
   },
@@ -84,6 +84,17 @@ const mockPresences: PresenceData[] = [
     pm: true,
     profiles: null,
   },
+  {
+    user_id: "user6",
+    am: false,
+    pm: false,
+    profiles: {
+      first_name: "Sarah",
+      last_name: "Connor",
+      avatar_url:
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+    },
+  },
 ];
 
 // Default story with multiple presences
@@ -109,12 +120,15 @@ export const Default: Story = {
     await expect(canvas.getByText("Mike Johnson")).toBeInTheDocument();
     await expect(canvas.getByText("Wilson")).toBeInTheDocument();
     await expect(canvas.getByText("Unnamed teammate")).toBeInTheDocument();
+    await expect(canvas.getByText("Sarah Connor")).toBeInTheDocument();
 
     // Test that AM/PM chips are displayed correctly
     const amChips = canvas.getAllByText("AM");
     const pmChips = canvas.getAllByText("PM");
+    const notComingChips = canvas.getAllByText("Not coming");
     await expect(amChips).toHaveLength(3); // John, Mike, Wilson
     await expect(pmChips).toHaveLength(3); // Jane, Mike, Unnamed teammate
+    await expect(notComingChips).toHaveLength(1); // Sarah Connor
   },
 };
 
@@ -231,6 +245,85 @@ export const ErrorState: Story = {
   play: async ({ canvas }) => {
     await expect(canvas.getByText("Failed to load list.")).toBeInTheDocument();
     await expect(canvas.queryByRole("list")).not.toBeInTheDocument();
+  },
+};
+
+// Story specifically showcasing "not coming" status
+export const NotComingUsers: Story = {
+  args: {
+    presences: [
+      {
+        user_id: "user1",
+        am: true,
+        pm: true,
+        profiles: {
+          first_name: "Alice",
+          last_name: "Working",
+          avatar_url:
+            "https://images.unsplash.com/photo-1494790108755-2616b45cad1d?w=150&h=150&fit=crop&crop=face",
+        },
+      },
+      {
+        user_id: "user2",
+        am: false,
+        pm: false,
+        profiles: {
+          first_name: "Bob",
+          last_name: "Away",
+          avatar_url:
+            "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+        },
+      },
+      {
+        user_id: "user3",
+        am: false,
+        pm: false,
+        profiles: {
+          first_name: "Charlie",
+          last_name: "Sick",
+          avatar_url: null,
+        },
+      },
+    ],
+    isLoading: false,
+    error: null,
+  },
+  render: (args) => (
+    <div className="w-96">
+      <PresenceList {...args} />
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    // Test that all users are displayed
+    await expect(canvas.getByText("Alice Working")).toBeInTheDocument();
+    await expect(canvas.getByText("Bob Away")).toBeInTheDocument();
+    await expect(canvas.getByText("Charlie Sick")).toBeInTheDocument();
+
+    // Test presence indicators
+    await expect(canvas.getByText("AM")).toBeInTheDocument();
+    await expect(canvas.getByText("PM")).toBeInTheDocument();
+
+    const notComingChips = canvas.getAllByText("Not coming");
+    await expect(notComingChips).toHaveLength(2); // Bob and Charlie
+
+    // Test visual styling - "not coming" users should be greyed out
+    const listItems = canvas.getAllByRole("listitem");
+    const aliceItem = listItems.find((item) =>
+      item.textContent?.includes("Alice Working")
+    );
+    const bobItem = listItems.find((item) =>
+      item.textContent?.includes("Bob Away")
+    );
+    const charlieItem = listItems.find((item) =>
+      item.textContent?.includes("Charlie Sick")
+    );
+
+    // Alice (coming) should not have opacity-50 class
+    await expect(aliceItem).not.toHaveClass("opacity-50");
+
+    // Bob and Charlie (not coming) should have opacity-50 class
+    await expect(bobItem).toHaveClass("opacity-50");
+    await expect(charlieItem).toHaveClass("opacity-50");
   },
 };
 

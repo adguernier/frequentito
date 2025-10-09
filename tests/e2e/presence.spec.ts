@@ -137,3 +137,83 @@ test.describe("Presence submission", () => {
     await expect(notComing).toBeDisabled();
   });
 });
+
+test.describe("Presence list", () => {
+  test("presence list is updated after user submits presence", async ({
+    page,
+  }) => {
+    // Log in as user1@marmelab.com
+    await login(page);
+
+    // Submit morning presence
+    const morning = page.getByRole("button", { name: "In morning" });
+    await morning.click();
+    await expect(morning).toHaveAttribute("aria-pressed", "true");
+
+    await page.getByRole("button", { name: "Save" }).click();
+
+    // Wait for the form to be locked (indicating save completed)
+    await expect(
+      page.getByRole("button", { name: "Update my presence" })
+    ).toBeVisible({ timeout: 10000 });
+
+    // Verify the presence list appears using the specific test ID
+    const presenceList = page.getByTestId("presence-list");
+    await expect(presenceList).toBeVisible();
+
+    // Find the user in the list by their name
+    const userListItem = page
+      .getByRole("listitem")
+      .filter({ hasText: "User1 Demo" });
+    await expect(userListItem).toBeVisible();
+
+    // Check for AM chip within the user's list item using getByText
+    await expect(userListItem.getByText("AM")).toBeVisible();
+
+    // Ensure PM chip is not present for this user
+    await expect(userListItem.getByText("PM")).toHaveCount(0);
+
+    // Ensure the user is not greyed out (since they are coming)
+    await expect(userListItem).not.toHaveClass(/opacity-50/);
+  });
+
+  test("presence list shows user as 'not coming' with greyed out styling", async ({
+    page,
+  }) => {
+    // Log in as user1@marmelab.com
+    await login(page);
+
+    // Submit "not coming" presence
+    const notComing = page.getByRole("button", { name: "Not coming" });
+
+    // Initially, when no presence is set, "Not coming" should be selected by default
+    await expect(notComing).toHaveAttribute("aria-pressed", "true");
+
+    await page.getByRole("button", { name: "Save" }).click();
+
+    // Wait for the form to be locked
+    await expect(
+      page.getByRole("button", { name: "Update my presence" })
+    ).toBeVisible({ timeout: 10000 });
+
+    // Verify the presence list appears using the specific test ID
+    const presenceList = page.getByTestId("presence-list");
+    await expect(presenceList).toBeVisible();
+
+    // Find the user in the list by their name
+    const userListItem = page
+      .getByRole("listitem")
+      .filter({ hasText: "User1 Demo" });
+    await expect(userListItem).toBeVisible();
+
+    // Check for "Not coming" chip
+    await expect(userListItem.getByText("Not coming")).toBeVisible();
+
+    // Ensure AM and PM chips are not present
+    await expect(userListItem.getByText("AM")).toHaveCount(0);
+    await expect(userListItem.getByText("PM")).toHaveCount(0);
+
+    // Verify the user is greyed out (opacity-50 class)
+    await expect(userListItem).toHaveClass(/opacity-50/);
+  });
+});

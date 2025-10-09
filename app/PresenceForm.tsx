@@ -4,6 +4,7 @@ import { Button } from "@heroui/button";
 import PresenceChoices from "@/components/PresenceChoices";
 import { useActionState, useEffect, useState } from "react";
 import { upsertPresence } from "./actions";
+import { useRouter } from "next/navigation";
 
 type PresenceFormProps = {
   initialAm?: boolean;
@@ -21,6 +22,7 @@ export const PresenceForm = ({
   const [pm, setPm] = useState<boolean>(initialPm);
   const [notComing, setNotComing] = useState<boolean>(!initialAm && !initialPm);
   const [locked, setLocked] = useState<boolean>(lockedInitially);
+  const router = useRouter();
 
   useEffect(() => {
     setNotComing(!am && !pm);
@@ -29,8 +31,10 @@ export const PresenceForm = ({
   useEffect(() => {
     if (state && "ok" in state && state.ok) {
       setLocked(true);
+      // Refresh the page to update the presence list
+      router.refresh();
     }
-  }, [state]);
+  }, [state, router]);
 
   const toggleAm = () => {
     setAm((v) => !v);
