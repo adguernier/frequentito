@@ -136,7 +136,9 @@ test.describe("Presence submission", () => {
     await expect(notComing).toHaveAttribute("aria-pressed", "false");
     await expect(notComing).toBeDisabled();
   });
+});
 
+test.describe("Presence list", () => {
   test("presence list is updated after user submits presence", async ({
     page,
   }) => {
