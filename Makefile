@@ -17,6 +17,9 @@ build: ## Build the project for production
 
 start: start-supabase start-app ## start the stack locally
 
+start-prod: start-supabase build ## Build and start the project
+	npm run start
+
 lint: ## Run ESLint with auto-fix
 	npm run lint
 
@@ -48,3 +51,11 @@ storybook: ## Start Storybook
 
 test: ## Run tests with Storybook
 	npm run test-storybook
+
+e2e: ## Run headless e2e 
+	@echo "Running Playwright tests (headless)"
+	npx playwright test --project=chromium
+
+e2e-ui: ## Run e2e in UI mode
+	@echo "Running Playwright tests in UI mode"
+	npx playwright test --ui --project=chromium
