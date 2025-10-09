@@ -11,7 +11,7 @@ const meta: Meta<typeof PresenceList> = {
     docs: {
       description: {
         component:
-          "A component that displays a list of user presences with their morning/afternoon availability and profile information.",
+          "A component that displays a list of user presences with their morning/afternoon availability and profile information. Users who are not coming are visually greyed out for easy distinction.",
       },
     },
   },
@@ -305,6 +305,25 @@ export const NotComingUsers: Story = {
 
     const notComingChips = canvas.getAllByText("Not coming");
     await expect(notComingChips).toHaveLength(2); // Bob and Charlie
+
+    // Test visual styling - "not coming" users should be greyed out
+    const listItems = canvas.getAllByRole("listitem");
+    const aliceItem = listItems.find((item) =>
+      item.textContent?.includes("Alice Working")
+    );
+    const bobItem = listItems.find((item) =>
+      item.textContent?.includes("Bob Away")
+    );
+    const charlieItem = listItems.find((item) =>
+      item.textContent?.includes("Charlie Sick")
+    );
+
+    // Alice (coming) should not have opacity-50 class
+    await expect(aliceItem).not.toHaveClass("opacity-50");
+
+    // Bob and Charlie (not coming) should have opacity-50 class
+    await expect(bobItem).toHaveClass("opacity-50");
+    await expect(charlieItem).toHaveClass("opacity-50");
   },
 };
 

@@ -51,11 +51,14 @@ export default function PresenceList({
               }${presence.profiles?.last_name ?? ""}`
             : "Unnamed teammate";
         const avatarUrl = presence.profiles?.avatar_url || null;
+        const isNotComing = !presence.am && !presence.pm;
 
         return (
           <li
             key={presence.user_id}
-            className="flex items-center justify-between p-3"
+            className={`flex items-center justify-between p-3 ${
+              isNotComing ? "opacity-50" : ""
+            }`}
           >
             <span className="flex items-center gap-3">
               {avatarUrl ? (
@@ -80,7 +83,7 @@ export default function PresenceList({
                   PM
                 </Chip>
               )}
-              {!presence.am && !presence.pm && (
+              {isNotComing && (
                 <Chip size="sm" color="default" variant="flat">
                   Not coming
                 </Chip>
