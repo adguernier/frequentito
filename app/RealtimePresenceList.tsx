@@ -18,15 +18,6 @@ export function RealtimePresenceList(props: PresenceListProps) {
     const updatePresences = async (payload: { new: PresenceData }) => {
       const updatedPresence = payload.new;
 
-      if (!updatedPresence.am && !updatedPresence.pm) {
-        setPresences((prev) =>
-          prev.filter(
-            (presence) => presence.user_id !== updatedPresence.user_id
-          )
-        );
-        return;
-      }
-
       const profiles = (
         await supabase
           .from("profiles")

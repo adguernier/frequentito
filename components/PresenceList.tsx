@@ -80,6 +80,11 @@ export default function PresenceList({
                   PM
                 </Chip>
               )}
+              {!presence.am && !presence.pm && (
+                <Chip size="sm" color="default" variant="flat">
+                  Not coming
+                </Chip>
+              )}
             </span>
           </li>
         );

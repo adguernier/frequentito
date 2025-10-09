@@ -9,8 +9,7 @@ export default async function PresenceListContainer() {
   const { data, error } = await supabase
     .from("presences")
     .select("user_id, am, pm, profiles(first_name,last_name,avatar_url)")
-    .eq("day", today)
-    .or("am.is.true,pm.is.true");
+    .eq("day", today);
 
   const presences = (data as PresenceData[] | null) ?? [];
   const errorMessage = error ? "Failed to load presences" : null;
