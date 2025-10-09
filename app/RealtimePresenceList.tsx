@@ -27,7 +27,7 @@ export function RealtimePresenceList(props: PresenceListProps) {
         return;
       }
 
-      updatedPresence.profiles = (
+      const profiles = (
         await supabase
           .from("profiles")
           .select("*")
@@ -39,13 +39,15 @@ export function RealtimePresenceList(props: PresenceListProps) {
           }>()
       ).data;
 
+      const newPresence = { ...updatedPresence, profiles };
+
       setPresences((prev) => {
-        if (!prev.find((p) => p.user_id === updatedPresence.user_id)) {
-          return [...prev, updatedPresence];
+        if (!prev.find((p) => p.user_id === newPresence.user_id)) {
+          return [...prev, newPresence];
         }
         return prev.map((presence) =>
-          presence.user_id === updatedPresence.user_id
-            ? updatedPresence
+          presence.user_id === newPresence.user_id
+            ? newPresence
             : presence
         );
       });
