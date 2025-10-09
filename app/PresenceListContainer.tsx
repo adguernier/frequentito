@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
-import PresenceList from "@/components/PresenceList";
 import type { PresenceData } from "@/components/PresenceList";
+import { RealtimePresenceList } from "./RealtimePresenceList";
 
 export default async function PresenceListContainer() {
   const supabase = await createClient();
@@ -15,5 +15,5 @@ export default async function PresenceListContainer() {
   const presences = (data as PresenceData[] | null) ?? [];
   const errorMessage = error ? "Failed to load presences" : null;
 
-  return <PresenceList presences={presences} error={errorMessage} />;
+  return <RealtimePresenceList presences={presences} error={errorMessage} />;
 }

@@ -12,7 +12,7 @@ export type PresenceData = {
   } | null;
 };
 
-type PresenceListProps = {
+export type PresenceListProps = {
   presences: PresenceData[];
   isLoading?: boolean;
   error?: string | null;
