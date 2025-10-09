@@ -15,9 +15,11 @@ const main = async () => {
   );
 
   const PASSWORD = "testuser";
+  const emailDomain =
+    process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAIN || "example.com";
 
   for (let i = 1; i <= 10; i++) {
-    const email = `user${i}@${process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAIN}`;
+    const email = `user${i}@${emailDomain}`;
     const password = PASSWORD;
     const first_name = `User${i}`;
     const last_name = "Demo";
