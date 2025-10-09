@@ -31,6 +31,9 @@ jobs:
 
       - name: Push database migrations
         run: |
+          # Validate migrations with a dry run first
+          supabase db push --dry-run
+          # If the dry run succeeds, apply the migrations
           supabase db push
 
       - name: Verify migration success
