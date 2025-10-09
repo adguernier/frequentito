@@ -5,7 +5,6 @@
  * Learn more about the Seed Client by following our guide: https://docs.snaplet.dev/seed/getting-started
  */
 import { createClient } from "@supabase/supabase-js";
-import "../../envConfig";
 import { createSeedClient } from "@snaplet/seed";
 
 const main = async () => {
@@ -18,7 +17,7 @@ const main = async () => {
   const PASSWORD = "testuser";
 
   for (let i = 1; i <= 10; i++) {
-    const email = `user${i}@marmelab.com`;
+    const email = `user${i}@${process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAIN}`;
     const password = PASSWORD;
     const first_name = `User${i}`;
     const last_name = "Demo";

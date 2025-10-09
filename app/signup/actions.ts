@@ -5,6 +5,9 @@ import { createClient } from "@/utils/supabase/server";
 import z from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import "@/envConfig";
+
+const allowedDomain = process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAIN;
 
 const SignupFormSchema = z
   .object({
@@ -15,9 +18,19 @@ const SignupFormSchema = z
     last_name: z.string().min(1, { message: "Last name is required." }).trim(),
     email: z
       .email({ message: "Please enter a valid email." })
-      .refine((email) => email.endsWith("@marmelab.com"), {
-        message: "Email must end with @marmelab.com",
-      })
+      .refine(
+        (email) => {
+          if (!allowedDomain) {
+            throw new Error(
+              "NEXT_PUBLIC_ALLOWED_EMAIL_DOMAIN environment variable is required"
+            );
+          }
+          return email.endsWith(`@${allowedDomain}`);
+        },
+        {
+          message: `Email must end with the configured domain '@${allowedDomain}'`,
+        }
+      )
       .trim(),
     password: z
       .string()
