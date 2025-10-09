@@ -145,18 +145,6 @@ test.describe("Presence list", () => {
     // Log in as user1@marmelab.com
     await login(page);
 
-    // Initially, the presence list should be empty or not show the current user
-    const presenceList = page
-      .locator("ul")
-      .filter({ hasText: /AM|PM|Not coming/ })
-      .first();
-
-    // Check if user is already in the list (in case of existing data)
-    const userInListBefore = page
-      .locator("li")
-      .filter({ hasText: "User1 Demo" });
-    const wasInListBefore = (await userInListBefore.count()) > 0;
-
     // Submit morning presence
     const morning = page.getByRole("button", { name: "In morning" });
     await morning.click();
@@ -169,21 +157,24 @@ test.describe("Presence list", () => {
       page.getByRole("button", { name: "Update my presence" })
     ).toBeVisible({ timeout: 10000 });
 
-    // Verify the user appears in the presence list with AM chip
+    // Verify the presence list appears using the specific test ID
+    const presenceList = page.getByTestId("presence-list");
     await expect(presenceList).toBeVisible();
-    const userInList = page.locator("li").filter({ hasText: "User1 Demo" });
-    await expect(userInList).toBeVisible();
 
-    // Check for AM chip within the user's list item
-    const amChip = userInList.locator("text=AM");
-    await expect(amChip).toBeVisible();
+    // Find the user in the list by their name
+    const userListItem = page
+      .getByRole("listitem")
+      .filter({ hasText: "User1 Demo" });
+    await expect(userListItem).toBeVisible();
+
+    // Check for AM chip within the user's list item using getByText
+    await expect(userListItem.getByText("AM")).toBeVisible();
 
     // Ensure PM chip is not present for this user
-    const pmChip = userInList.locator("text=PM");
-    await expect(pmChip).toHaveCount(0);
+    await expect(userListItem.getByText("PM")).toHaveCount(0);
 
     // Ensure the user is not greyed out (since they are coming)
-    await expect(userInList).not.toHaveClass(/opacity-50/);
+    await expect(userListItem).not.toHaveClass(/opacity-50/);
   });
 
   test("presence list shows user as 'not coming' with greyed out styling", async ({
@@ -194,8 +185,9 @@ test.describe("Presence list", () => {
 
     // Submit "not coming" presence
     const notComing = page.getByRole("button", { name: "Not coming" });
-    await notComing.click();
-    // await expect(notComing).toHaveAttribute("aria-pressed", "true");
+
+    // Initially, when no presence is set, "Not coming" should be selected by default
+    await expect(notComing).toHaveAttribute("aria-pressed", "true");
 
     await page.getByRole("button", { name: "Save" }).click();
 
@@ -204,27 +196,24 @@ test.describe("Presence list", () => {
       page.getByRole("button", { name: "Update my presence" })
     ).toBeVisible({ timeout: 10000 });
 
-    // Verify the user appears in the presence list
-    const presenceList = page
-      .locator("ul")
-      .filter({ hasText: /AM|PM|Not coming/ })
-      .first();
+    // Verify the presence list appears using the specific test ID
+    const presenceList = page.getByTestId("presence-list");
     await expect(presenceList).toBeVisible();
 
-    const userInList = page.locator("li").filter({ hasText: "User1 Demo" });
-    await expect(userInList).toBeVisible();
+    // Find the user in the list by their name
+    const userListItem = page
+      .getByRole("listitem")
+      .filter({ hasText: "User1 Demo" });
+    await expect(userListItem).toBeVisible();
 
     // Check for "Not coming" chip
-    const notComingChip = userInList.locator("text=Not coming");
-    await expect(notComingChip).toBeVisible();
+    await expect(userListItem.getByText("Not coming")).toBeVisible();
 
     // Ensure AM and PM chips are not present
-    const amChip = userInList.locator("text=AM");
-    const pmChip = userInList.locator("text=PM");
-    await expect(amChip).toHaveCount(0);
-    await expect(pmChip).toHaveCount(0);
+    await expect(userListItem.getByText("AM")).toHaveCount(0);
+    await expect(userListItem.getByText("PM")).toHaveCount(0);
 
     // Verify the user is greyed out (opacity-50 class)
-    await expect(userInList).toHaveClass(/opacity-50/);
+    await expect(userListItem).toHaveClass(/opacity-50/);
   });
 });

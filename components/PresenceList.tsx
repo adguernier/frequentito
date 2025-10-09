@@ -40,7 +40,10 @@ export default function PresenceList({
   }
 
   return (
-    <ul className="divide-y divide-default-200 w-full bg-content1 rounded-lg overflow-hidden">
+    <ul
+      className="divide-y divide-default-200 w-full bg-content1 rounded-lg overflow-hidden"
+      data-testid="presence-list"
+    >
       {presences.map((presence) => {
         const fullName =
           presence.profiles?.first_name || presence.profiles?.last_name
