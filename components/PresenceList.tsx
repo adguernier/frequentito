@@ -41,7 +41,7 @@ export default function PresenceList({
 
   return (
     <ul
-      className="divide-y divide-default-200 w-full bg-content1 rounded-lg overflow-hidden"
+      className="divide-y divide-default-200 w-full bg-content1 rounded-lg"
       data-testid="presence-list"
     >
       {presences.map((presence) => {
