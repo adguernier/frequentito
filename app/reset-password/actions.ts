@@ -1,7 +1,6 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
-import { getAllowedEmailDomain } from "@/utils/emailDomainConfig";
 import { headers } from "next/headers";
 import z from "zod";
 

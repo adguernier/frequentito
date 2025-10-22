@@ -107,8 +107,8 @@ export default function ResetPasswordPage() {
             {authError && <p className="font-medium">{authError}</p>}
             {formErrors.length > 0 && (
               <ul className="space-y-1 mt-2">
-          {formErrors.map((err, i) => (
-            <li key={i} className="flex items-start gap-2">
+          {formErrors.map((err) => (
+            <li key={err} className="flex items-start gap-2">
               <span className="text-red-500 mt-0.5">•</span>
               <span>{err}</span>
             </li>
