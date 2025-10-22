@@ -67,6 +67,25 @@ const main = async () => {
     `\n🎉 Successfully created ${totalCreated} new users! (${totalSkipped} users already existed)`
   );
 
+  // Make the first user an admin
+  console.log("\n👑 Setting up admin user...");
+  const adminEmail = `user1@${emailDomain}`;
+  const { data: adminUser } = await supabase.auth.admin.listUsers();
+  const admin = adminUser.users?.find((user) => user.email === adminEmail);
+
+  if (admin) {
+    const { error: updateError } = await supabase
+      .from("profiles")
+      .update({ roles: ["admin"] })
+      .eq("id", admin.id);
+
+    if (updateError) {
+      console.error(`❌ Failed to set admin role:`, updateError.message);
+    } else {
+      console.log(`✅ ${adminEmail} is now an admin`);
+    }
+  }
+
   // Only exit if this script is run directly (not imported)
   if (require.main === module) {
     process.exit(0);
