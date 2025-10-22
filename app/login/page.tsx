@@ -33,7 +33,7 @@ export default function LoginPage() {
   const authError =
     typeof state?.errors === "string" ? state.errors : undefined;
   return (
-    <div className="min-h-screen w-full flex items-center justify-center px-4 py-8">
+    <div className="w-full flex items-center justify-center px-4 py-8">
       <form
         action={action}
         onSubmit={() => setDirty(false)}
