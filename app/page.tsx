@@ -26,7 +26,6 @@ export default async function Home() {
       lockedInitially = true;
     }
   }
-  console.log({ initialAm, initialPm, lockedInitially });
   return (
     <section className="min-h-[80vh] w-full flex flex-col items-center justify-center gap-8 px-4 py-8">
       <PushManager />
