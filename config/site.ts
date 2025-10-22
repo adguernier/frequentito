@@ -15,7 +15,7 @@ export const siteConfig = {
       href: "/profile",
     },
     {
-      label: "login",
+      label: "Login",
       href: "/login",
     },
     {
