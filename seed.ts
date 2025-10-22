@@ -17,6 +17,7 @@ const main = async () => {
       if (require.main === module) {
         process.exit(1);
       }
+      throw error;
     });
 
     // Then seed presences
@@ -26,6 +27,7 @@ const main = async () => {
       if (require.main === module) {
         process.exit(1);
       }
+      throw error;
     });
 
     console.log("\n🎉 Database seeding completed successfully!");
