@@ -17,9 +17,9 @@ self.addEventListener('push', (event) => {
   const title = payload.title || 'Frequentito';
   const options = {
     body: payload.body || 'Presence updated',
-    icon: '/favicon.ico',
+    icon: '/android-chrome-192x192.png',
     data: payload.data || {},
-    badge: '/favicon.ico',
+    badge: '/android-chrome-192x192.png',
   };
 
   event.waitUntil(self.registration.showNotification(title, options));
