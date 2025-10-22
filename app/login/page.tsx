@@ -69,6 +69,13 @@ export default function LoginPage() {
           }
           placeholder="Enter your password"
         />
+        
+        <div className="flex justify-end">
+          <Link href="/reset-password" className="text-sm text-default-500 hover:text-default-700 underline">
+            Forgot password?
+          </Link>
+        </div>
+
         <Button type="submit" size="lg" className="w-full" isDisabled={pending}>
           {pending ? "Logging in…" : "Log in"}
         </Button>
