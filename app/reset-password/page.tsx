@@ -100,13 +100,19 @@ export default function ResetPasswordPage() {
         </p>
 
         {!pending && !dirty && (authError || formErrors.length > 0) && (
-          <div role="alert" className="text-sm text-red-500">
-            {authError && <p>{authError}</p>}
+          <div 
+            role="alert" 
+            className="text-sm text-red-600 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 p-4 rounded-lg"
+          >
+            {authError && <p className="font-medium">{authError}</p>}
             {formErrors.length > 0 && (
-              <ul className="list-disc pl-5">
-                {formErrors.map((err, i) => (
-                  <li key={i}>{err}</li>
-                ))}
+              <ul className="space-y-1 mt-2">
+          {formErrors.map((err, i) => (
+            <li key={i} className="flex items-start gap-2">
+              <span className="text-red-500 mt-0.5">•</span>
+              <span>{err}</span>
+            </li>
+          ))}
               </ul>
             )}
           </div>
