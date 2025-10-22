@@ -9,7 +9,7 @@ import { expect } from "@playwright/test";
  */
 export async function login(
   page: Page,
-  email = "user1@marmelab.com",
+  email = "user1@yourdomain.com",
   password = "testuser"
 ) {
   await page.goto("/login");

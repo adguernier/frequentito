@@ -48,6 +48,54 @@ VAPID_PRIVATE_KEY=<your-private-key>
 VAPID_SUBJECT=<your-subject>
 ```
 
+### Configure Email Domain Validation
+
+The application validates user email addresses against a configured domain to restrict registration.
+
+#### 1. Set the Environment Variable
+
+Add the allowed email domain to your `.env` file:
+
+```bash
+NEXT_PUBLIC_ALLOWED_EMAIL_DOMAIN=yourdomain.com
+```
+
+This environment variable is used for:
+- Client-side form validation and UI placeholders
+- Server-side signup validation
+- Database configuration sync
+
+#### 2. Update Database Configuration
+
+The email domain validation is also enforced at the database level. After setting the environment variable, you need to sync it to the database:
+
+1. **During seeding** (recommended for development):
+   ```bash
+   make seed
+   ```
+   The seed script automatically updates the database configuration.
+
+2. **Manual update** (for production or when changing domains):
+   You can update the database configuration by calling the sync function in your application or directly in the database:
+   
+   ```sql
+   INSERT INTO public.app_config (key, value, description)
+   VALUES ('allowed_email_domain', 'yourdomain.com', 'Email domain required for user registration')
+   ON CONFLICT (key) DO UPDATE SET
+     value = EXCLUDED.value,
+     updated_at = NOW();
+   ```
+
+#### 3. Verification
+
+Once configured, the application will:
+- Only allow user registration with emails ending in `@yourdomain.com`
+- Show the configured domain in the signup form placeholder
+- Enforce validation both client-side and server-side
+- Block registration attempts at the database level
+
+**Note**: Both the environment variable and database configuration must match for proper functionality.
+
 ## Development
 
 ### Run the tests

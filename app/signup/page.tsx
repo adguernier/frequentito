@@ -17,6 +17,9 @@ type Errors = {
   };
 };
 
+const allowedDomain =
+  process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAIN || "yourdomain.com";
+
 export default function SignupPage() {
   const [state, action, pending] = useActionState(signup, undefined);
 
@@ -90,7 +93,7 @@ export default function SignupPage() {
           onChange={handleChange}
           isInvalid={!pending && !dirty && emailErrors.length > 0}
           errorMessage={!pending && !dirty ? emailErrors.join("\n") : undefined}
-          placeholder="Enter your email (@marmelab.com)"
+          placeholder={`Enter your email (@${allowedDomain})`}
         />
         <Input
           isRequired
