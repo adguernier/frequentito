@@ -6,6 +6,7 @@ import { createClient } from "@/utils/supabase/client";
 import { supabaseDataProvider } from "ra-supabase";
 import { profile } from "./resources/profiles";
 import { presence } from "./resources/presences";
+import { darkTheme, lightTheme } from "./theme";
 
 const dataProvider = supabaseDataProvider({
   instanceUrl: process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -13,9 +14,14 @@ const dataProvider = supabaseDataProvider({
   supabaseClient: createClient(),
 });
 
+
 export default function AdminApp() {
   return (
-    <Admin dataProvider={dataProvider}>
+    <Admin
+      dataProvider={dataProvider}
+      theme={darkTheme}
+      lightTheme={lightTheme}
+    >
       <Resource {...profile} />
       <Resource {...presence} />
     </Admin>
