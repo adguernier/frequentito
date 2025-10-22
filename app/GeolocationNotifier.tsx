@@ -24,7 +24,7 @@ function getDistanceInMeters(
   return R * c;
 }
 
-const OFFICE_RADIUS_METERS = 5000; // Notify when within 500m of office
+const OFFICE_RADIUS_METERS = 500; // Notify when within 500m of office
 const CHECK_INTERVAL_MS = 5 * 60 * 1000; // Check every 5 minutes
 const NOTIFICATION_COOLDOWN_MS = 24 * 60 * 60 * 1000; // Don't notify more than once per 24 hours
 
