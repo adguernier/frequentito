@@ -10,8 +10,8 @@ test.beforeEach(async () => {
 
 test.describe("User logout", () => {
   test("user can log out from profile page", async ({ page }) => {
-    // Log in first
-    await login(page);
+    // Log in with a different user to prevent other user from other tests to be logged out
+    await login(page, "user2@yourdomain.com", "testuser");
 
     // Navigate to profile page
     await page.goto("/profile");
