@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { PresenceForm } from "@/app/PresenceForm";
 import PresenceListContainer from "@/app/PresenceListContainer";
 import PushManager from "@/app/PushManager";
+import GeolocationNotifier from "@/app/GeolocationNotifier";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function Home() {
@@ -29,6 +30,7 @@ export default async function Home() {
   return (
     <section className="min-h-[80vh] w-full flex flex-col items-center justify-center gap-8 px-4 py-8">
       <PushManager />
+      <GeolocationNotifier />
       <PresenceForm
         initialAm={initialAm}
         initialPm={initialPm}

@@ -114,3 +114,49 @@ export const BellOffIcon = ({
     <path d="M2 2l20 20" />
   </svg>
 );
+
+export const LocationOnIcon = ({
+  size = 18,
+  width,
+  height,
+  ...props
+}: IconSvgProps) => (
+  <svg
+    viewBox="0 0 24 24"
+    width={size || width}
+    height={size || height}
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+    <circle cx="12" cy="10" r="3" />
+  </svg>
+);
+
+export const LocationOffIcon = ({
+  size = 18,
+  width,
+  height,
+  ...props
+}: IconSvgProps) => (
+  <svg
+    viewBox="0 0 24 24"
+    width={size || width}
+    height={size || height}
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M3.6 3.6l16.8 16.8" />
+    <path d="M9.9 4.3A9 9 0 0 1 21 10c0 2.4-1.2 4.9-3 7.2" />
+    <path d="M6.2 6.2A9 9 0 0 0 3 10c0 7 9 13 9 13s2.7-1.8 5.2-4.6" />
+    <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
+  </svg>
+);
