@@ -1,11 +1,14 @@
 /**
- * ! Executing this script will delete all data in your database and seed it with 10 users.
- * ! Make sure to adjust the script to your needs.
- * Use any TypeScript runner to run this script, for example: `npx tsx seed.ts`
- * Learn more about the Seed Client by following our guide: https://docs.snaplet.dev/seed/getting-started
+ * Seed script to create user records
+ * Use: npx tsx supabase/seeds/users.ts
  */
+import { loadEnvConfig } from "@next/env";
 import { createClient } from "@supabase/supabase-js";
 import { createSeedClient } from "@snaplet/seed";
+
+// Load environment variables
+const projectDir = process.cwd();
+loadEnvConfig(projectDir, true, console, true);
 
 const main = async () => {
   const seed = await createSeedClient();
@@ -14,15 +17,34 @@ const main = async () => {
     process.env.SUPABASE_ROLE_KEY!
   );
 
+  console.log("🔄 Creating users...");
+
   const PASSWORD = "testuser";
   const emailDomain =
     process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAIN || "example.com";
+
+  console.log(`👥 Generating 10 users with domain: ${emailDomain}`);
+
+  let totalCreated = 0;
+  let totalSkipped = 0;
 
   for (let i = 1; i <= 10; i++) {
     const email = `user${i}@${emailDomain}`;
     const password = PASSWORD;
     const first_name = `User${i}`;
     const last_name = "Demo";
+
+    // Check if user already exists
+    const { data: existingUsers } = await supabase.auth.admin.listUsers();
+    const userExists = existingUsers.users?.some(
+      (user) => user.email === email
+    );
+
+    if (userExists) {
+      console.log(`⚪ User already exists: ${email} - skipping`);
+      totalSkipped++;
+      continue;
+    }
 
     const { data, error } = await supabase.auth.admin.createUser({
       email,
@@ -32,12 +54,23 @@ const main = async () => {
     });
 
     if (error) {
-      console.error(`Failed to create ${email}:`, error.message);
+      console.error(`❌ Failed to create ${email}:`, error.message);
     } else {
-      console.log(`Created user: ${email} (id: ${data.user?.id})`);
+      totalCreated++;
+      console.log(
+        `✅ Created user: ${email} (${first_name} ${last_name}) - id: ${data.user?.id}`
+      );
     }
   }
 
-  process.exit();
+  console.log(
+    `\n🎉 Successfully created ${totalCreated} new users! (${totalSkipped} users already existed)`
+  );
+
+  // Only exit if this script is run directly (not imported)
+  if (require.main === module) {
+    process.exit(0);
+  }
 };
+
 export default main;
