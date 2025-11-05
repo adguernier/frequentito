@@ -298,6 +298,10 @@ npx playwright test tests/e2e/homepage-date.spec.ts -g "locale"  # PASS expected
 
 **Checkpoint**: All quality gates passed - ready for pull request
 
+### Bug Fixes (Post-Implementation)
+
+- [x] **Fix locale handling for CI environments**: Added locale sanitization to handle invalid locale tags like `en-US@posix` that can appear in CI environments. The component now strips invalid suffixes and includes try-catch fallback to `en-US` for any remaining invalid locales.
+
 ---
 
 ## Dependencies & Execution Order

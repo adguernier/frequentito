@@ -50,16 +50,31 @@ export function CurrentDate({
   );
 
   // Detect locale from navigator or use prop
-  const userLocale =
+  const rawLocale =
     locale || (typeof navigator !== "undefined" ? navigator.language : "en-US");
 
-  // Format date using Intl.DateTimeFormat
-  const formattedDate = new Intl.DateTimeFormat(userLocale, {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(currentDate);
+  // Sanitize locale by removing invalid suffixes like @posix, @euro, etc.
+  // Valid BCP 47 language tags don't include @ symbols
+  const userLocale = rawLocale.split("@")[0] || "en-US";
+
+  // Format date using Intl.DateTimeFormat with fallback handling
+  let formattedDate: string;
+  try {
+    formattedDate = new Intl.DateTimeFormat(userLocale, {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(currentDate);
+  } catch (error) {
+    // Fallback to en-US if locale is still invalid
+    formattedDate = new Intl.DateTimeFormat("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(currentDate);
+  }
 
   // Setup midnight auto-update interval
   useEffect(() => {
