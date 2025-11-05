@@ -31,7 +31,17 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+This feature MUST comply with all 5 constitution principles. Check each gate:
+
+- [ ] **Gate 1 - Code Quality**: TypeScript strict mode, Zod validation, interface-first design, zero ESLint errors
+- [ ] **Gate 2 - Testing Standards**: E2E tests planned for all user stories, component tests for UI, test-first approach documented
+- [ ] **Gate 3 - UX Consistency**: HeroUI components, theme support, loading/error states, WCAG 2.1 AA accessibility planned
+- [ ] **Gate 4 - Performance**: Page load < 3s, interactions < 500ms, real-time < 2s, Core Web Vitals targets documented
+- [ ] **Gate 5 - Simplicity**: No unnecessary complexity, justified technology choices, pragmatic approach documented
+- [ ] **Gate 6 - Tech Stack Compliance**: Using approved stack (Next.js 15+, TypeScript 5.6+, HeroUI v2, Supabase)
+- [ ] **Gate 7 - Independent Testability**: Each user story can be tested independently, MVP scope clearly defined
+
+**Pass Criteria**: All gates MUST pass OR violations MUST be documented in Complexity Tracking with justification.
 
 ## Project Structure
 

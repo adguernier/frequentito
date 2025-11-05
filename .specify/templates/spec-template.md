@@ -12,10 +12,16 @@
   Each user story/journey must be INDEPENDENTLY TESTABLE - meaning if you implement just ONE of them,
   you should still have a viable MVP (Minimum Viable Product) that delivers value.
   
+  CONSTITUTION REQUIREMENT (Principle II - Testing Standards):
+  - E2E tests (Playwright) MUST be written FIRST for each user story and verified to FAIL
+  - Component tests (Storybook + Vitest) MUST be written for all UI components
+  - Each story MUST be testable without dependencies on other stories
+  - Accessibility tests MUST be included (WCAG 2.1 AA compliance)
+  
   Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
   Think of each story as a standalone slice of functionality that can be:
   - Developed independently
-  - Tested independently
+  - Tested independently (with E2E and component tests)
   - Deployed independently
   - Demonstrated to users independently
 -->
@@ -105,6 +111,13 @@
 <!--
   ACTION REQUIRED: Define measurable success criteria.
   These must be technology-agnostic and measurable.
+  
+  CONSTITUTION REQUIREMENTS (Principle IV - Performance):
+  Include specific performance targets where applicable:
+  - Page load < 3s (on 3G connections)
+  - Interactions < 500ms response time
+  - Real-time updates < 2s latency
+  - Core Web Vitals: LCP < 2.5s, FID < 100ms, CLS < 0.1
 -->
 
 ### Measurable Outcomes
@@ -113,3 +126,12 @@
 - **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
 - **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
 - **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
+- **SC-005**: [Performance metric per constitution, e.g., "Page loads in under 3s on 3G"]
+- **SC-006**: [Performance metric per constitution, e.g., "User interactions respond within 500ms"]
+
+### Constitution Compliance Targets
+
+- **Accessibility**: WCAG 2.1 AA compliance verified with Storybook a11y addon
+- **Code Quality**: Zero ESLint errors, TypeScript strict mode, Zod validation for all inputs
+- **Testing Coverage**: 100% of user stories covered by E2E tests, 100% of components with Storybook stories
+- **Performance**: All performance targets (Principle IV) verified before deployment
