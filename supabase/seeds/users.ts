@@ -4,14 +4,12 @@
  */
 import { loadEnvConfig } from "@next/env";
 import { createClient } from "@supabase/supabase-js";
-import { createSeedClient } from "@snaplet/seed";
 
 // Load environment variables
 const projectDir = process.cwd();
 loadEnvConfig(projectDir, true, console, true);
 
 const main = async () => {
-  const seed = await createSeedClient();
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_ROLE_KEY!
