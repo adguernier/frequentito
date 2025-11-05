@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { PresenceForm } from "@/app/PresenceForm";
 import PresenceListContainer from "@/app/PresenceListContainer";
 import PushManager from "@/app/PushManager";
+import { CurrentDate } from "@/app/components/CurrentDate";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function Home() {
@@ -10,6 +11,7 @@ export default async function Home() {
     data: { user },
   } = await supabase.auth.getUser();
   const today = new Date().toISOString().slice(0, 10);
+  const serverDate = new Date();
   let initialAm = false;
   let initialPm = false;
   let lockedInitially = false;
@@ -29,6 +31,9 @@ export default async function Home() {
   return (
     <section className="min-h-[80vh] w-full flex flex-col items-center justify-center gap-8 px-4 py-8">
       <PushManager />
+      <div className="w-full max-w-md mx-auto">
+        <CurrentDate initialDate={serverDate} />
+      </div>
       <PresenceForm
         initialAm={initialAm}
         initialPm={initialPm}
@@ -36,7 +41,7 @@ export default async function Home() {
       />
       <div className="w-full max-w-md mx-auto">
         <h2 className="text-sm font-medium mb-2 text-foreground-500">
-          Today’s teammates
+          Today's teammates
         </h2>
         <Suspense
           fallback={<p className="text-sm text-foreground-500">Loading…</p>}
